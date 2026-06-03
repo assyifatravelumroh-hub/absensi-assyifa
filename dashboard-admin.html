@@ -297,7 +297,7 @@
   // =============================================
   // KONFIGURASI — WAJIB DIISI
   // =============================================
-  const SCRIPT_URL  = "https://script.google.com/macros/sAKfycby_CeYmocTksvGQ_k4ZLLFurX2jDget_klyAP3-bniTnrrS9n9z4ubuUOCAqEjd9y3lCw/exec";
+  const SCRIPT_URL  = "https://script.google.com/macros/s/AKfycbwjgvK02jHQ6ZP_agviAc99bzLHuaf2S8DJS0VGZxMZJwQ_IK78Z00u4kREsxjBbcDfxw/exec";
   const ADMIN_PASS  = "assyifa2025"; // Ganti password sesuai keinginan
 
   // =============================================
@@ -361,6 +361,26 @@
     return s;
   }
 
+
+  function jsonpFetch(url) {
+    return new Promise((resolve, reject) => {
+      const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => {
+        delete window[cbName]; script.remove();
+        reject(new Error('Timeout'));
+      }, 15000);
+      window[cbName] = data => {
+        clearTimeout(timeout);
+        delete window[cbName]; script.remove();
+        resolve(data);
+      };
+      script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+      script.onerror = () => { clearTimeout(timeout); reject(new Error('Error')); };
+      document.head.appendChild(script);
+    });
+  }
+
   // =============================================
   // LOAD DATA dari Google Apps Script
   // =============================================
@@ -373,8 +393,7 @@
 
     try {
       const url = SCRIPT_URL + '?action=getData&t=' + Date.now();
-      const res = await fetch(url);
-      const json = await res.json();
+      const json = await jsonpFetch(url);
       allData = json.data || [];
       renderTable();
     } catch(e) {
