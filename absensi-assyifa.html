@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Absensi Pegawai — Assyifa Tour & Travel</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a7a4a;
+    --green-light: #e8f5ee;
+    --green-mid: #2d9e62;
+    --blue: #1a4fa0;
+    --blue-light: #e8f0fb;
+    --gold: #c9860a;
+    --gold-light: #fdf3e0;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --gray: #6b7280;
+    --border: #e5e7eb;
+    --bg: #f7f8fa;
+    --white: #ffffff;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+    color: var(--text);
+  }
+
+  /* Header */
+  .header {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 8px 18px 8px 10px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--green), var(--green-mid));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .logo-text span {
+    display: block;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+
+  /* Clock */
+  .clock-card {
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(135deg, #0f4c2a 0%, #1a7a4a 60%, #22a05e 100%);
+    border-radius: var(--radius);
+    padding: 24px;
+    color: white;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .clock-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+
+  .clock-card::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -20px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+
+  .clock-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+
+  .clock-time {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .clock-date {
+    font-size: 14px;
+    opacity: 0.75;
+    font-weight: 500;
+  }
+
+  /* Form Card */
+  .form-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .form-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-title::before {
+    content: '';
+    display: block;
+    width: 4px; height: 18px;
+    background: var(--green);
+    border-radius: 2px;
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(26,122,74,0.1);
+    background: white;
+  }
+
+  /* Buttons Hadir/Pulang */
+  .action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 18px 12px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+
+  .btn-hadir {
+    background: var(--green-light);
+    color: var(--green);
+    border-color: rgba(26,122,74,0.2);
+  }
+
+  .btn-hadir:hover, .btn-hadir:active {
+    background: var(--green);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,122,74,0.3);
+  }
+
+  .btn-pulang {
+    background: var(--blue-light);
+    color: var(--blue);
+    border-color: rgba(26,79,160,0.2);
+  }
+
+  .btn-pulang:hover, .btn-pulang:active {
+    background: var(--blue);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,79,160,0.3);
+  }
+
+  /* Status / Result */
+  .status-card {
+    display: none;
+    width: 100%;
+    max-width: 420px;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    border: 1.5px solid;
+    animation: slideIn 0.35s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .status-card.success {
+    background: var(--green-light);
+    border-color: rgba(26,122,74,0.3);
+    color: var(--green);
+    display: block;
+  }
+
+  .status-card.error {
+    background: var(--red-light);
+    border-color: rgba(192,57,43,0.3);
+    color: var(--red);
+    display: block;
+  }
+
+  .status-icon { font-size: 32px; margin-bottom: 8px; }
+  .status-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .status-body  { font-size: 13px; opacity: 0.8; }
+
+  /* Footer info */
+  .info-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--gold-light);
+    border: 1px solid rgba(201,134,10,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .info-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  .info-text {
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-btn {
+    grid-column: 1 / -1;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--green);
+    color: white;
+    border: none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo-wrap">
+    <div class="logo-icon">✈️</div>
+    <div class="logo-text">
+      Assyifa Tour & Travel
+      <span>Sistem Absensi Digital</span>
+    </div>
+  </div>
+</div>
+
+<!-- Jam & Tanggal -->
+<div class="clock-card">
+  <div class="clock-label">Waktu Sekarang (WIB)</div>
+  <div class="clock-time" id="jam">--:--:--</div>
+  <div class="clock-date" id="tanggal">--</div>
+</div>
+
+<!-- Status Card (muncul setelah submit) -->
+<div class="status-card" id="statusCard">
+  <div class="status-icon" id="statusIcon"></div>
+  <div class="status-title" id="statusTitle"></div>
+  <div class="status-body" id="statusBody"></div>
+</div>
+
+<!-- Form -->
+<div class="form-card" id="formCard">
+  <div class="form-title">Data Pegawai</div>
+
+  <div class="field">
+    <label>Nama Lengkap</label>
+    <input type="text" id="nama" placeholder="Masukkan nama lengkap..." autocomplete="name"/>
+  </div>
+
+  <div class="field">
+    <label>Divisi / Jabatan</label>
+    <select id="divisi">
+      <option value="">-- Pilih divisi --</option>
+      <option>Tour Guide</option>
+      <option>Ticketing</option>
+      <option>Admin & Keuangan</option>
+      <option>Marketing</option>
+      <option>Driver</option>
+      <option>Operasional</option>
+      <option>Manajemen</option>
+    </select>
+  </div>
+
+  <div class="action-buttons" id="actionButtons">
+    <button class="btn btn-hadir" onclick="submitAbsensi('Hadir')">
+      <span class="btn-icon">🟢</span>
+      Hadir
+    </button>
+    <button class="btn btn-pulang" onclick="submitAbsensi('Pulang')">
+      <span class="btn-icon">🔵</span>
+      Pulang
+    </button>
+    <button class="loading-btn" id="loadingBtn">
+      <span class="spinner"></span> Menyimpan...
+    </button>
+  </div>
+</div>
+
+<!-- Info -->
+<div class="info-card">
+  <span class="info-icon">💡</span>
+  <div class="info-text">
+    Data absensi otomatis tersimpan ke Google Sheets dan dapat dilihat oleh admin kapan saja.
+  </div>
+</div>
+
+<script>
+  // =============================================
+  // GANTI URL INI dengan URL Google Apps Script
+  // setelah kamu deploy (lihat panduan setup)
+  // =============================================
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmC3wI7jBZG-DuK-tyZVZq2yjJP1_KOi_pTh6jxewv9QD0ttpX3CSN_9JDcNoZcO9I1w/exec";
+
+  // Jam real-time
+  function updateClock() {
+    const now = new Date();
+    const jam = now.toLocaleTimeString('id-ID', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      timeZone: 'Asia/Jakarta'
+    });
+    const tgl = now.toLocaleDateString('id-ID', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+      timeZone: 'Asia/Jakarta'
+    });
+    document.getElementById('jam').textContent = jam;
+    document.getElementById('tanggal').textContent = tgl;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Submit absensi
+  async function submitAbsensi(tipe) {
+    const nama   = document.getElementById('nama').value.trim();
+    const divisi = document.getElementById('divisi').value;
+
+    if (!nama) {
+      showStatus('error', '⚠️', 'Nama belum diisi', 'Silakan masukkan nama lengkap kamu dulu.');
+      document.getElementById('nama').focus();
+      return;
+    }
+    if (!divisi) {
+      showStatus('error', '⚠️', 'Divisi belum dipilih', 'Silakan pilih divisi atau jabatan kamu.');
+      return;
+    }
+
+    // Tampilkan loading
+    document.getElementById('actionButtons').style.display = 'none';
+    document.getElementById('loadingBtn').style.display = 'flex';
+    hideStatus();
+
+    const now = new Date();
+    const params = new URLSearchParams({
+      nama, divisi, tipe,
+      waktu: now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
+      timestamp: now.getTime()
+    });
+
+    try {
+      await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
+      // no-cors: kita anggap sukses jika tidak ada error network
+      const emoji  = tipe === 'Hadir' ? '✅' : '👋';
+      const judul  = tipe === 'Hadir' ? 'Absensi Masuk Berhasil!' : 'Absensi Pulang Berhasil!';
+      const pesan  = `Hai, ${nama}! Absensi ${tipe.toLowerCase()} kamu pada ${now.toLocaleTimeString('id-ID', {timeZone:'Asia/Jakarta'})} telah tercatat.`;
+      showStatus('success', emoji, judul, pesan);
+      // Reset form
+      document.getElementById('nama').value = '';
+      document.getElementById('divisi').value = '';
+    } catch(e) {
+      showStatus('error', '❌', 'Gagal Mengirim', 'Periksa koneksi internet kamu, lalu coba lagi.');
+    } finally {
+      document.getElementById('loadingBtn').style.display = 'none';
+      document.getElementById('actionButtons').style.display = 'grid';
+    }
+  }
+
+  function showStatus(type, icon, title, body) {
+    const card = document.getElementById('statusCard');
+    card.className = 'status-card ' + type;
+    document.getElementById('statusIcon').textContent  = icon;
+    document.getElementById('statusTitle').textContent = title;
+    document.getElementById('statusBody').textContent  = body;
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideStatus() {
+    document.getElementById('statusCard').className = 'status-card';
+  }
+</script>
+</body>
+</html>
