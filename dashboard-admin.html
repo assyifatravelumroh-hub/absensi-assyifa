@@ -297,7 +297,7 @@
   // =============================================
   // KONFIGURASI — WAJIB DIISI
   // =============================================
-  const SCRIPT_URL  = "https://script.google.com/macros/s/AKfycby_CeYmocTksvGQ_k4ZLLFurX2jDget_klyAP3-bniTnrrS9n9z4ubuUOCAqEjd9y3lCw/exec";
+  const SCRIPT_URL  = "https://script.google.com/macros/sAKfycby_CeYmocTksvGQ_k4ZLLFurX2jDget_klyAP3-bniTnrrS9n9z4ubuUOCAqEjd9y3lCw/exec";
   const ADMIN_PASS  = "assyifa2025"; // Ganti password sesuai keinginan
 
   // =============================================
@@ -327,6 +327,38 @@
       weekday:'long', day:'numeric', month:'long', year:'numeric',
       hour:'2-digit', minute:'2-digit', timeZone:'Asia/Jakarta'
     });
+  }
+
+
+  function parseTanggal(raw) {
+    if (!raw) return '';
+    const s = String(raw);
+    if (s.match(/^\d{2}\/\d{2}\/\d{4}$/)) return s;
+    if (s.includes('T') || s.match(/^\d{4}-/)) {
+      const d = new Date(s);
+      if (!isNaN(d)) {
+        const wib = new Date(d.getTime() + 7*60*60*1000);
+        const dd = String(wib.getUTCDate()).padStart(2,'0');
+        const mm = String(wib.getUTCMonth()+1).padStart(2,'0');
+        return dd+'/'+mm+'/'+wib.getUTCFullYear();
+      }
+    }
+    return s;
+  }
+  function parseJam(raw) {
+    if (!raw) return '-';
+    const s = String(raw);
+    if (s.match(/^\d{2}:\d{2}:\d{2}$/)) return s;
+    if (s.includes('T')) {
+      const d = new Date(s);
+      if (!isNaN(d)) {
+        const wib = new Date(d.getTime() + 7*60*60*1000);
+        return String(wib.getUTCHours()).padStart(2,'0')+':'+
+               String(wib.getUTCMinutes()).padStart(2,'0')+':'+
+               String(wib.getUTCSeconds()).padStart(2,'0');
+      }
+    }
+    return s;
   }
 
   // =============================================
@@ -362,7 +394,7 @@
 
     // Filter
     let filtered = allData.filter(row => {
-      if (tgl && row[0] !== formatTgl(tgl)) return false;
+      if (tgl && parseTanggal(row[0]) !== formatTgl(tgl)) return false;
       if (divisi && row[4] !== divisi) return false;
       if (ket && row[6] !== ket) return false;
       if (nama && !row[3].toLowerCase().includes(nama)) return false;
@@ -417,7 +449,7 @@
         <td style="color:var(--gray);font-size:12px">${i+1}</td>
         <td><b>${row[0]}</b></td>
         <td style="color:var(--gray)">${row[1]}</td>
-        <td><b>${row[2]}</b></td>
+        <td><b>${parseJam(row[2])}</b></td>
         <td>${row[3]}</td>
         <td><span style="font-size:12px;color:var(--gray)">${row[4]}</span></td>
         <td>${tipeB}</td>
