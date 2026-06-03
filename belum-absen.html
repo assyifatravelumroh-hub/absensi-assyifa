@@ -6,159 +6,77 @@
 <title>Siapa Belum Absen — Assyifa Tour & Travel</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --green: #1a7a4a; --green-light: #e8f5ee;
-    --red: #c0392b; --red-light: #fdecea;
-    --gold: #c9860a; --gold-light: #fdf3e0;
-    --blue: #1a4fa0; --blue-light: #e8f0fb;
-    --gray: #6b7280; --border: #e5e7eb;
-    --bg: #f7f8fa; --white: #fff; --text: #111827;
-    --shadow: 0 4px 24px rgba(0,0,0,0.07);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  /* Topbar */
-  .topbar {
-    background: linear-gradient(135deg, #0f4c2a, #1a7a4a);
-    padding: 16px 20px; display: flex; align-items: center;
-    justify-content: space-between; color: white;
-    position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  }
-  .topbar-left { display: flex; align-items: center; gap: 10px; }
-  .topbar-title { font-size: 15px; font-weight: 800; line-height: 1.2; }
-  .topbar-title small { font-size: 11px; font-weight: 500; opacity: 0.7; display: block; }
-  .btn-refresh {
-    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-    color: white; border-radius: 8px; padding: 7px 14px;
-    font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
-  }
-  .btn-refresh:hover { background: rgba(255,255,255,0.25); }
-
-  /* Auth */
-  .auth-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .auth-card {
-    background: var(--white); border-radius: 20px; padding: 36px 32px;
-    box-shadow: var(--shadow); border: 1px solid var(--border);
-    width: 100%; max-width: 340px; text-align: center;
-  }
-  .auth-icon { font-size: 48px; margin-bottom: 12px; }
-  .auth-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-  .auth-sub { font-size: 13px; color: var(--gray); margin-bottom: 24px; }
-  .auth-input {
-    width: 100%; padding: 13px 16px; border: 1.5px solid var(--border);
-    border-radius: 10px; font-family: inherit; font-size: 15px; outline: none;
-    margin-bottom: 12px; text-align: center; letter-spacing: 2px;
-  }
-  .auth-input:focus { border-color: var(--green); }
-  .auth-btn {
-    width: 100%; padding: 14px; background: var(--green); color: white;
-    border: none; border-radius: 10px; font-family: inherit;
-    font-size: 15px; font-weight: 700; cursor: pointer;
-  }
-  .auth-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
-
-  /* Main */
-  .main { display: none; padding: 20px; max-width: 700px; margin: 0 auto; }
-
-  /* Date bar */
-  .date-bar {
-    background: var(--white); border-radius: 14px; padding: 14px 18px;
-    border: 1px solid var(--border); margin-bottom: 16px;
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-  }
-  .date-bar .tgl { font-size: 14px; font-weight: 700; }
-  .date-bar .tgl small { font-size: 12px; color: var(--gray); font-weight: 500; }
-  .date-input { padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; outline: none; }
-  .date-input:focus { border-color: var(--green); }
-
-  /* Summary cards */
-  .summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-  .sum-card {
-    background: var(--white); border-radius: 14px; padding: 16px;
-    border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow);
-  }
-  .sum-num { font-size: 30px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-  .sum-label { font-size: 11px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-  .sum-card.total .sum-num { color: var(--blue); }
-  .sum-card.sudah .sum-num { color: var(--green); }
-  .sum-card.belum .sum-num { color: var(--red); }
-
-  /* Section */
-  .section-card {
-    background: var(--white); border-radius: 14px;
-    border: 1px solid var(--border); overflow: hidden;
-    box-shadow: var(--shadow); margin-bottom: 16px;
-  }
-  .section-head {
-    padding: 14px 18px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .section-head .sh-title { font-size: 14px; font-weight: 700; }
-  .section-head .sh-count {
-    font-size: 12px; font-weight: 700; padding: 3px 10px;
-    border-radius: 20px; margin-left: auto;
-  }
-  .sh-count.merah { background: var(--red-light); color: var(--red); }
-  .sh-count.hijau { background: var(--green-light); color: var(--green); }
-
-  /* Pegawai item */
-  .pegawai-list { padding: 8px 0; }
-  .pegawai-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 18px; border-bottom: 1px solid #f3f4f6; transition: background 0.15s;
-  }
-  .pegawai-item:last-child { border-bottom: none; }
-  .pegawai-item:hover { background: #f9fafb; }
-  .avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 800; flex-shrink: 0;
-  }
-  .avatar.merah { background: var(--red-light); color: var(--red); }
-  .avatar.hijau { background: var(--green-light); color: var(--green); }
-  .peg-info { flex: 1; min-width: 0; }
-  .peg-nama { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .peg-divisi { font-size: 12px; color: var(--gray); margin-top: 1px; }
-  .peg-status { flex-shrink: 0; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
-  }
-  .badge-belum  { background: var(--red-light);   color: var(--red); }
-  .badge-hadir  { background: var(--green-light);  color: var(--green); }
-  .badge-sakit  { background: var(--red-light);    color: var(--red); }
-  .badge-izin   { background: var(--gold-light);   color: var(--gold); }
-  .badge-dinas  { background: var(--blue-light);   color: var(--blue); }
-
-  /* Loading */
-  .loading { text-align: center; padding: 40px; color: var(--gray); }
-  .spinner {
-    display: inline-block; width: 28px; height: 28px;
-    border: 3px solid var(--border); border-top-color: var(--green);
-    border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Waktu update */
-  .update-info { text-align: center; font-size: 12px; color: var(--gray); margin-top: 8px; padding-bottom: 8px; }
+  :root{--green:#1a7a4a;--green-light:#e8f5ee;--red:#c0392b;--red-light:#fdecea;--gold:#c9860a;--gold-light:#fdf3e0;--blue:#1a4fa0;--blue-light:#e8f0fb;--gray:#6b7280;--border:#e5e7eb;--bg:#f7f8fa;--white:#fff;--text:#111827;--shadow:0 4px 24px rgba(0,0,0,0.07);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  .topbar{background:linear-gradient(135deg,#0f4c2a,#1a7a4a);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;color:white;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
+  .topbar-left{display:flex;align-items:center;gap:10px;}
+  .topbar-title{font-size:15px;font-weight:800;line-height:1.2;}
+  .topbar-title small{font-size:11px;font-weight:500;opacity:0.7;display:block;}
+  .btn-refresh{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;border-radius:8px;padding:7px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;}
+  .auth-gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .auth-card{background:var(--white);border-radius:20px;padding:36px 32px;box-shadow:var(--shadow);border:1px solid var(--border);width:100%;max-width:340px;text-align:center;}
+  .auth-icon{font-size:48px;margin-bottom:12px;}
+  .auth-title{font-size:20px;font-weight:800;margin-bottom:6px;}
+  .auth-sub{font-size:13px;color:var(--gray);margin-bottom:24px;}
+  .auth-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px;}
+  .auth-input:focus{border-color:var(--green);}
+  .auth-btn{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;}
+  .auth-err{color:var(--red);font-size:13px;margin-top:10px;display:none;}
+  .main{display:none;padding:20px;max-width:700px;margin:0 auto;}
+  .date-bar{background:var(--white);border-radius:14px;padding:14px 18px;border:1px solid var(--border);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .date-bar .tgl{font-size:14px;font-weight:700;}
+  .date-bar .tgl small{font-size:12px;color:var(--gray);font-weight:500;}
+  .date-input{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;outline:none;}
+  .date-input:focus{border-color:var(--green);}
+  .summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+  .sum-card{background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--border);text-align:center;box-shadow:var(--shadow);}
+  .sum-num{font-size:30px;font-weight:800;line-height:1;margin-bottom:4px;}
+  .sum-label{font-size:11px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+  .sum-card.total .sum-num{color:var(--blue);}
+  .sum-card.sudah .sum-num{color:var(--green);}
+  .sum-card.belum .sum-num{color:var(--red);}
+  .section-card{background:var(--white);border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px;}
+  .section-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .section-head .sh-title{font-size:14px;font-weight:700;}
+  .section-head .sh-count{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:auto;}
+  .sh-count.merah{background:var(--red-light);color:var(--red);}
+  .sh-count.hijau{background:var(--green-light);color:var(--green);}
+  .pegawai-list{padding:8px 0;}
+  .pegawai-item{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid #f3f4f6;transition:background 0.15s;}
+  .pegawai-item:last-child{border-bottom:none;}
+  .pegawai-item:hover{background:#f9fafb;}
+  .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;}
+  .avatar.merah{background:var(--red-light);color:var(--red);}
+  .avatar.hijau{background:var(--green-light);color:var(--green);}
+  .peg-info{flex:1;min-width:0;}
+  .peg-nama{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .peg-divisi{font-size:12px;color:var(--gray);margin-top:1px;}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-belum{background:var(--red-light);color:var(--red);}
+  .badge-hadir{background:var(--green-light);color:var(--green);}
+  .badge-sakit{background:var(--red-light);color:var(--red);}
+  .badge-izin{background:var(--gold-light);color:var(--gold);}
+  .badge-dinas{background:var(--blue-light);color:var(--blue);}
+  .badge-lembur{background:#ede9fe;color:#6d28d9;}
+  .loading{text-align:center;padding:40px;color:var(--gray);}
+  .spinner{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:10px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .update-info{text-align:center;font-size:12px;color:var(--gray);margin-top:8px;padding-bottom:8px;}
 </style>
 </head>
 <body>
-
-<!-- Auth -->
 <div class="auth-gate" id="authGate">
   <div class="auth-card">
     <div class="auth-icon">👥</div>
     <div class="auth-title">Rekap Kehadiran</div>
     <div class="auth-sub">Assyifa Tour & Travel<br>Masukkan password admin</div>
-    <input type="password" class="auth-input" id="passInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') cekPass()"/>
+    <input type="password" class="auth-input" id="passInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')cekPass()"/>
     <button class="auth-btn" onclick="cekPass()">Masuk</button>
     <div class="auth-err" id="authErr">❌ Password salah.</div>
   </div>
 </div>
 
-<!-- Topbar -->
 <div class="topbar" id="topbar" style="display:none">
   <div class="topbar-left">
     <span style="font-size:20px">✈️</span>
@@ -167,164 +85,156 @@
   <button class="btn-refresh" onclick="loadData()">🔄 Refresh</button>
 </div>
 
-<!-- Main -->
 <div class="main" id="mainContent">
-
-  <!-- Date bar -->
   <div class="date-bar">
-    <div class="tgl">
-      <div id="tglLabel">--</div>
-      <small id="tglSub">--</small>
-    </div>
+    <div class="tgl"><div id="tglLabel">--</div><small>Data kehadiran pegawai</small></div>
     <input type="date" class="date-input" id="tglInput" onchange="loadData()"/>
   </div>
-
-  <!-- Summary -->
   <div class="summary">
-    <div class="sum-card total"><div class="sum-num" id="s-total">-</div><div class="sum-label">Total Pegawai</div></div>
-    <div class="sum-card sudah"><div class="sum-num" id="s-sudah">-</div><div class="sum-label">Sudah Absen</div></div>
-    <div class="sum-card belum"><div class="sum-num" id="s-belum">-</div><div class="sum-label">Belum Absen</div></div>
+    <div class="sum-card total"><div class="sum-num" id="s-total">9</div><div class="sum-label">Total Pegawai</div></div>
+    <div class="sum-card sudah"><div class="sum-num" id="s-sudah">0</div><div class="sum-label">Sudah Absen</div></div>
+    <div class="sum-card belum"><div class="sum-num" id="s-belum">9</div><div class="sum-label">Belum Absen</div></div>
   </div>
-
-  <!-- Belum Absen -->
-  <div class="section-card" id="cardBelum">
-    <div class="section-head">
-      <span>🔴</span>
-      <div class="sh-title">Belum Absen Hari Ini</div>
-      <div class="sh-count merah" id="countBelum">-</div>
-    </div>
+  <div class="section-card">
+    <div class="section-head"><span>🔴</span><div class="sh-title">Belum Absen Hari Ini</div><div class="sh-count merah" id="countBelum">-</div></div>
     <div class="loading" id="loadBelum"><div class="spinner"></div><br>Memuat...</div>
     <div class="pegawai-list" id="listBelum" style="display:none"></div>
   </div>
-
-  <!-- Sudah Absen -->
-  <div class="section-card" id="cardSudah">
-    <div class="section-head">
-      <span>🟢</span>
-      <div class="sh-title">Sudah Absen Hari Ini</div>
-      <div class="sh-count hijau" id="countSudah">-</div>
-    </div>
+  <div class="section-card">
+    <div class="section-head"><span>🟢</span><div class="sh-title">Sudah Absen Hari Ini</div><div class="sh-count hijau" id="countSudah">-</div></div>
     <div class="pegawai-list" id="listSudah"></div>
   </div>
-
   <div class="update-info" id="updateInfo"></div>
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_CeYmocTksvGQ_k4ZLLFurX2jDget_klyAP3-bniTnrrS9n9z4ubuUOCAqEjd9y3lCw/exec";
-  const ADMIN_PASS = "assyifa2025";
-
-  // Daftar semua pegawai
-  const SEMUA_PEGAWAI = [
-    { nama: "Teguh Muhammad Firdaus",  divisi: "Direktur Utama" },
-    { nama: "Muhamad Arif Basuni",     divisi: "Direktur Operasional" },
-    { nama: "Cepi Sutanto",            divisi: "Direktur Marketing" },
-    { nama: "Azhar Dzaky Muhamad HM",  divisi: "Manajer Operasional" },
-    { nama: "Fithri Amalia Rahma",     divisi: "Manajer Keuangan" },
-    { nama: "Nabila Azahra",           divisi: "Staff Marketing Media" },
-    { nama: "Andy Rohaendy",           divisi: "Staff Marketing" },
-    { nama: "Zenal Ali Mansur",        divisi: "Staff Marketing" },
-    { nama: "Dedi",                    divisi: "Staff Operasional" }
+  const SCRIPT_URL="https://script.google.com/macros/s/AKfycby_CeYmocTksvGQ_k4ZLLFurX2jDget_klyAP3-bniTnrrS9n9z4ubuUOCAqEjd9y3lCw/exec";
+  const ADMIN_PASS="assyifa2025";
+  const SEMUA_PEGAWAI=[
+    {nama:"Teguh Muhammad Firdaus",divisi:"Direktur Utama"},
+    {nama:"Muhamad Arif Basuni",divisi:"Direktur Operasional"},
+    {nama:"Cepi Sutanto",divisi:"Direktur Marketing"},
+    {nama:"Azhar Dzaky Muhamad HM",divisi:"Manajer Operasional"},
+    {nama:"Fithri Amalia Rahma",divisi:"Manajer Keuangan"},
+    {nama:"Nabila Azahra",divisi:"Staff Marketing Media"},
+    {nama:"Andy Rohaendy",divisi:"Staff Marketing"},
+    {nama:"Zenal Ali Mansur",divisi:"Staff Marketing"},
+    {nama:"Dedi",divisi:"Staff Operasional"}
   ];
 
-  function cekPass() {
-    if (document.getElementById('passInput').value === ADMIN_PASS) {
-      document.getElementById('authGate').style.display = 'none';
-      document.getElementById('topbar').style.display = 'flex';
-      document.getElementById('mainContent').style.display = 'block';
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' });
-      document.getElementById('tglInput').value = today;
+
+  function parseTanggal(raw) {
+    if (!raw) return '';
+    const s = String(raw);
+    if (s.match(/^\d{2}\/\d{2}\/\d{4}$/)) return s;
+    if (s.includes('T') || s.match(/^\d{4}-/)) {
+      const d = new Date(s);
+      if (!isNaN(d)) {
+        const wib = new Date(d.getTime() + 7*60*60*1000);
+        const dd = String(wib.getUTCDate()).padStart(2,'0');
+        const mm = String(wib.getUTCMonth()+1).padStart(2,'0');
+        return dd+'/'+mm+'/'+wib.getUTCFullYear();
+      }
+    }
+    return s;
+  }
+  function parseJam(raw) {
+    if (!raw) return '-';
+    const s = String(raw);
+    if (s.match(/^\d{2}:\d{2}:\d{2}$/)) return s;
+    if (s.includes('T')) {
+      const d = new Date(s);
+      if (!isNaN(d)) {
+        const wib = new Date(d.getTime() + 7*60*60*1000);
+        return String(wib.getUTCHours()).padStart(2,'0')+':'+
+               String(wib.getUTCMinutes()).padStart(2,'0')+':'+
+               String(wib.getUTCSeconds()).padStart(2,'0');
+      }
+    }
+    return s;
+  }
+
+  function jsonpFetch(url){
+    return new Promise((resolve,reject)=>{
+      const cbName='cb_'+Date.now();
+      const script=document.createElement('script');
+      const timeout=setTimeout(()=>{delete window[cbName];script.remove();reject(new Error('Timeout'));},15000);
+      window[cbName]=data=>{clearTimeout(timeout);delete window[cbName];script.remove();resolve(data);};
+      script.src=url+(url.includes('?')?'&':'?')+'callback='+cbName;
+      script.onerror=()=>{clearTimeout(timeout);reject(new Error('Error'));};
+      document.head.appendChild(script);
+    });
+  }
+
+  function cekPass(){
+    if(document.getElementById('passInput').value===ADMIN_PASS){
+      document.getElementById('authGate').style.display='none';
+      document.getElementById('topbar').style.display='flex';
+      document.getElementById('mainContent').style.display='block';
+      const today=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});
+      document.getElementById('tglInput').value=today;
       updateDateLabel(today);
       loadData();
     } else {
-      document.getElementById('authErr').style.display = 'block';
-      document.getElementById('passInput').value = '';
+      document.getElementById('authErr').style.display='block';
+      document.getElementById('passInput').value='';
     }
   }
 
-  function updateDateLabel(isoDate) {
-    const d = new Date(isoDate + 'T00:00:00');
-    document.getElementById('tglLabel').textContent = d.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    document.getElementById('tglSub').textContent = 'Data kehadiran pegawai';
+  function updateDateLabel(isoDate){
+    const d=new Date(isoDate+'T00:00:00');
+    document.getElementById('tglLabel').textContent=d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   }
 
-  async function loadData() {
-    const tglIso = document.getElementById('tglInput').value;
+  async function loadData(){
+    const tglIso=document.getElementById('tglInput').value;
     updateDateLabel(tglIso);
-    document.getElementById('loadBelum').style.display = 'block';
-    document.getElementById('listBelum').style.display = 'none';
+    document.getElementById('loadBelum').style.display='block';
+    document.getElementById('listBelum').style.display='none';
+    document.getElementById('listSudah').innerHTML='';
 
-    try {
-      const url = SCRIPT_URL + '?action=getData&t=' + Date.now();
-      const res  = await fetch(url);
-      const json = await res.json();
-      const data = json.data || [];
+    try{
+      const json=await jsonpFetch(SCRIPT_URL+'?action=getData&t='+Date.now());
+      const data=json.data||[];
+      const [y,m,d]=tglIso.split('-');
+      const tglFilter=`${d}/${m}/${y}`;
 
-      // Format tanggal filter: dd/MM/yyyy
-      const [y,m,d] = tglIso.split('-');
-      const tglFilter = `${d}/${m}/${y}`;
-
-      // Pegawai yang sudah absen hari ini (tipe Hadir saja)
-      const sudahAbsen = new Map();
-      data.forEach(row => {
-        if (row[0] === tglFilter && row[5] === 'Hadir') {
-          sudahAbsen.set(row[3], { jam: row[2], keterangan: row[6] });
+      const sudahAbsen=new Map();
+      data.forEach(row=>{
+        if(row[0]===tglFilter&&row[5]==='Hadir'){
+          sudahAbsen.set(row[3],{jam:parseJam(row[2]),keterangan:row[6]});
         }
       });
 
-      // Pisah belum & sudah
-      const belum = SEMUA_PEGAWAI.filter(p => !sudahAbsen.has(p.nama));
-      const sudah = SEMUA_PEGAWAI.filter(p =>  sudahAbsen.has(p.nama));
+      const belum=SEMUA_PEGAWAI.filter(p=>!sudahAbsen.has(p.nama));
+      const sudah=SEMUA_PEGAWAI.filter(p=>sudahAbsen.has(p.nama));
 
-      // Update summary
-      document.getElementById('s-total').textContent = SEMUA_PEGAWAI.length;
-      document.getElementById('s-sudah').textContent = sudah.length;
-      document.getElementById('s-belum').textContent = belum.length;
-      document.getElementById('countBelum').textContent = belum.length + ' orang';
-      document.getElementById('countSudah').textContent = sudah.length + ' orang';
+      document.getElementById('s-total').textContent=SEMUA_PEGAWAI.length;
+      document.getElementById('s-sudah').textContent=sudah.length;
+      document.getElementById('s-belum').textContent=belum.length;
+      document.getElementById('countBelum').textContent=belum.length+' orang';
+      document.getElementById('countSudah').textContent=sudah.length+' orang';
 
-      // Render belum absen
-      const listBelum = document.getElementById('listBelum');
-      listBelum.innerHTML = belum.length === 0
-        ? '<div style="text-align:center;padding:24px;color:var(--green);font-weight:700">🎉 Semua pegawai sudah absen!</div>'
-        : belum.map(p => `
-          <div class="pegawai-item">
-            <div class="avatar merah">${p.nama.charAt(0)}</div>
-            <div class="peg-info">
-              <div class="peg-nama">${p.nama}</div>
-              <div class="peg-divisi">${p.divisi}</div>
-            </div>
-            <div class="peg-status"><span class="badge badge-belum">⏳ Belum</span></div>
-          </div>`).join('');
+      const listBelum=document.getElementById('listBelum');
+      listBelum.innerHTML=belum.length===0
+        ?'<div style="text-align:center;padding:24px;color:var(--green);font-weight:700">🎉 Semua pegawai sudah absen!</div>'
+        :belum.map(p=>`<div class="pegawai-item"><div class="avatar merah">${p.nama.charAt(0)}</div><div class="peg-info"><div class="peg-nama">${p.nama}</div><div class="peg-divisi">${p.divisi}</div></div><span class="badge badge-belum">⏳ Belum</span></div>`).join('');
 
-      // Render sudah absen
-      const ketBadge = { Hadir:'badge-hadir', Sakit:'badge-sakit', Izin:'badge-izin', 'Perjalanan Dinas':'badge-dinas' };
-      const ketEmoji = { Hadir:'✅', Sakit:'🤒', Izin:'📋', 'Perjalanan Dinas':'🧳', Lembur:'🌙' };
-      document.getElementById('listSudah').innerHTML = sudah.length === 0
-        ? '<div style="text-align:center;padding:24px;color:var(--gray)">Belum ada yang absen.</div>'
-        : sudah.map(p => {
-          const info = sudahAbsen.get(p.nama);
-          const ket  = info.keterangan || 'Hadir';
-          return `<div class="pegawai-item">
-            <div class="avatar hijau">${p.nama.charAt(0)}</div>
-            <div class="peg-info">
-              <div class="peg-nama">${p.nama}</div>
-              <div class="peg-divisi">${p.divisi} • Jam ${info.jam}</div>
-            </div>
-            <div class="peg-status">
-              <span class="badge ${ketBadge[ket]||'badge-hadir'}">${ketEmoji[ket]||'✅'} ${ket}</span>
-            </div>
-          </div>`;
+      const ketBadge={Hadir:'badge-hadir',Sakit:'badge-sakit',Izin:'badge-izin','Perjalanan Dinas':'badge-dinas',Lembur:'badge-lembur'};
+      const ketEmoji={Hadir:'✅',Sakit:'🤒',Izin:'📋','Perjalanan Dinas':'🧳',Lembur:'🌙'};
+      document.getElementById('listSudah').innerHTML=sudah.length===0
+        ?'<div style="text-align:center;padding:24px;color:var(--gray)">Belum ada yang absen.</div>'
+        :sudah.map(p=>{
+          const info=sudahAbsen.get(p.nama);
+          const ket=info.keterangan||'Hadir';
+          return `<div class="pegawai-item"><div class="avatar hijau">${p.nama.charAt(0)}</div><div class="peg-info"><div class="peg-nama">${p.nama}</div><div class="peg-divisi">${p.divisi} • Jam ${info.jam}</div></div><span class="badge ${ketBadge[ket]||'badge-hadir'}">${ketEmoji[ket]||'✅'} ${ket}</span></div>`;
         }).join('');
 
-      document.getElementById('loadBelum').style.display = 'none';
-      document.getElementById('listBelum').style.display = 'block';
-      document.getElementById('updateInfo').textContent =
-        'Terakhir diperbarui: ' + new Date().toLocaleTimeString('id-ID', { timeZone:'Asia/Jakarta' });
-
-    } catch(e) {
-      document.getElementById('loadBelum').innerHTML =
-        '<div style="text-align:center;padding:32px;color:var(--red)">❌ Gagal memuat data.<br><small>Pastikan SCRIPT_URL sudah diisi.</small></div>';
+      document.getElementById('loadBelum').style.display='none';
+      document.getElementById('listBelum').style.display='block';
+      document.getElementById('updateInfo').textContent='Terakhir diperbarui: '+new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'});
+    } catch(e){
+      document.getElementById('loadBelum').innerHTML='<div style="text-align:center;padding:32px;color:var(--red)">❌ Gagal memuat data.</div>';
     }
   }
 </script>
