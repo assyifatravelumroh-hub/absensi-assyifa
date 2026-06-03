@@ -7,200 +7,94 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #1a7a4a; --green-light: #e8f5ee; --green-mid: #2d9e62;
-    --blue: #1a4fa0; --blue-light: #e8f0fb;
-    --gold: #c9860a; --gold-light: #fdf3e0;
-    --red: #c0392b; --red-light: #fdecea;
-    --purple: #6d28d9; --purple-light: #ede9fe;
-    --gray: #6b7280; --border: #e5e7eb;
-    --bg: #f7f8fa; --white: #fff; --text: #111827;
-    --radius: 16px; --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    --green:#1a7a4a;--green-light:#e8f5ee;--green-mid:#2d9e62;
+    --blue:#1a4fa0;--blue-light:#e8f0fb;
+    --gold:#c9860a;--gold-light:#fdf3e0;
+    --red:#c0392b;--red-light:#fdecea;
+    --purple:#6d28d9;--purple-light:#ede9fe;
+    --gray:#6b7280;--border:#e5e7eb;
+    --bg:#f7f8fa;--white:#fff;--text:#111827;
+    --radius:16px;--shadow:0 4px 24px rgba(0,0,0,0.08);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--bg); min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
-    padding: 24px 16px 40px; color: var(--text);
-  }
-
-  .header { width: 100%; max-width: 420px; text-align: center; margin-bottom: 24px; }
-  .logo-wrap {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: 50px; padding: 8px 18px 8px 10px;
-    margin-bottom: 16px; box-shadow: var(--shadow);
-  }
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--green), var(--green-mid));
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;
-  }
-  .logo-text { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
-  .logo-text span { display: block; font-weight: 500; color: var(--gray); font-size: 11px; }
-
-  .clock-card {
-    width: 100%; max-width: 420px;
-    background: linear-gradient(135deg, #0f4c2a 0%, #1a7a4a 60%, #22a05e 100%);
-    border-radius: var(--radius); padding: 20px 24px;
-    color: white; margin-bottom: 16px; position: relative; overflow: hidden;
-  }
-  .clock-card::before {
-    content: ''; position: absolute; top: -40px; right: -40px;
-    width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%;
-  }
-  .clock-inner { display: flex; justify-content: space-between; align-items: flex-end; }
-  .clock-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; margin-bottom: 4px; }
-  .clock-time { font-size: 44px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
-  .clock-date { font-size: 13px; opacity: 0.75; font-weight: 500; }
-  .jam-kerja {
-    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 10px; padding: 8px 12px; font-size: 11px; font-weight: 600;
-    text-align: center; line-height: 1.6; flex-shrink: 0;
-  }
-  .jam-kerja .jk-title { opacity: 0.7; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-  .jam-kerja .jk-row { display: flex; gap: 6px; align-items: center; }
-  .jam-kerja .jk-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .jam-kerja .jk-dot.masuk { background: #86efac; }
-  .jam-kerja .jk-dot.pulang { background: #93c5fd; }
-
-  .form-card {
-    width: 100%; max-width: 420px; background: var(--white);
-    border-radius: var(--radius); padding: 24px;
-    box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px;
-  }
-  .form-title {
-    font-size: 15px; font-weight: 700; margin-bottom: 18px; color: var(--text);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .form-title::before {
-    content: ''; display: block; width: 4px; height: 18px;
-    background: var(--green); border-radius: 2px;
-  }
-  .field { margin-bottom: 14px; }
-  label {
-    display: block; font-size: 12px; font-weight: 600; color: var(--gray);
-    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
-  }
-  input, select, textarea {
-    width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
-    border-radius: 10px; font-family: inherit; font-size: 15px; color: var(--text);
-    background: var(--bg); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none; appearance: none;
-  }
-  textarea { resize: none; height: 80px; line-height: 1.5; }
-  select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,122,74,0.1); background: white;
-  }
-  select:disabled { opacity: 0.6; cursor: not-allowed; }
-
-  /* Divisi auto-tag */
-  .divisi-tag {
-    display: none; margin-top: 8px; padding: 8px 12px;
-    background: var(--green-light); border-radius: 8px;
-    font-size: 13px; font-weight: 600; color: var(--green);
-    align-items: center; gap: 6px;
-  }
-  .divisi-tag.show { display: flex; }
-
-  /* Foto */
-  .foto-area {
-    border: 2px dashed var(--border); border-radius: 12px; padding: 16px;
-    text-align: center; cursor: pointer; transition: all 0.2s;
-    background: var(--bg); position: relative;
-  }
-  .foto-area:hover { border-color: var(--green); background: var(--green-light); }
-  .foto-area input[type="file"] {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    opacity: 0; cursor: pointer; padding: 0; border: none; background: none;
-  }
-  .foto-placeholder { pointer-events: none; }
-  .foto-placeholder .foto-icon { font-size: 28px; margin-bottom: 6px; }
-  .foto-placeholder p { font-size: 13px; color: var(--gray); font-weight: 500; }
-  .foto-placeholder small { font-size: 11px; color: var(--gray); }
-  .foto-preview { display: none; position: relative; border-radius: 10px; overflow: hidden; }
-  .foto-preview img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; display: block; }
-  .foto-preview .foto-change {
-    position: absolute; bottom: 8px; right: 8px;
-    background: rgba(0,0,0,0.6); color: white;
-    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; cursor: pointer;
-  }
-
-  /* Keterangan pills */
-  .ket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .ket-pill {
-    display: flex; align-items: center; gap: 8px; padding: 10px 12px;
-    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
-    font-size: 13px; font-weight: 600; color: var(--gray); background: var(--bg);
-    transition: all 0.15s; user-select: none;
-  }
-  .ket-pill input { display: none; }
-  .ket-pill .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: var(--border); transition: background 0.15s; }
-  .ket-pill.selected { border-color: var(--green); background: var(--green-light); color: var(--green); }
-  .ket-pill.selected .dot { background: var(--green); }
-  .ket-pill.ket-sakit.selected  { border-color: var(--red);    background: var(--red-light);    color: var(--red); }
-  .ket-pill.ket-sakit.selected .dot { background: var(--red); }
-  .ket-pill.ket-izin.selected   { border-color: var(--gold);   background: var(--gold-light);   color: var(--gold); }
-  .ket-pill.ket-izin.selected .dot { background: var(--gold); }
-  .ket-pill.ket-dinas.selected  { border-color: var(--blue);   background: var(--blue-light);   color: var(--blue); }
-  .ket-pill.ket-dinas.selected .dot { background: var(--blue); }
-  .ket-pill.ket-lembur.selected { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
-  .ket-pill.ket-lembur.selected .dot { background: var(--purple); }
-
-  /* Buttons */
-  .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
-  .btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 6px; padding: 18px 12px; border-radius: 12px; border: 2px solid transparent;
-    font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-    transition: all 0.2s; -webkit-tap-highlight-color: transparent;
-  }
-  .btn-icon { font-size: 26px; line-height: 1; }
-  .btn-hadir { background: var(--green-light); color: var(--green); border-color: rgba(26,122,74,0.2); }
-  .btn-hadir:hover, .btn-hadir:active { background: var(--green); color: white; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,122,74,0.3); }
-  .btn-pulang { background: var(--blue-light); color: var(--blue); border-color: rgba(26,79,160,0.2); }
-  .btn-pulang:hover, .btn-pulang:active { background: var(--blue); color: white; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,79,160,0.3); }
-
-  .status-card {
-    display: none; width: 100%; max-width: 420px; border-radius: var(--radius);
-    padding: 22px 24px; margin-bottom: 16px; border: 1.5px solid; animation: slideIn 0.35s ease;
-  }
-  @keyframes slideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
-  .status-card.success { background: var(--green-light); border-color: rgba(26,122,74,0.3); color: var(--green); display: block; }
-  .status-card.error   { background: var(--red-light);   border-color: rgba(192,57,43,0.3);  color: var(--red);   display: block; }
-  .status-icon  { font-size: 32px; margin-bottom: 8px; }
-  .status-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
-  .status-body  { font-size: 13px; opacity: 0.8; line-height: 1.5; }
-
-  .info-card {
-    width: 100%; max-width: 420px; background: var(--gold-light);
-    border: 1px solid rgba(201,134,10,0.2); border-radius: 12px;
-    padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start;
-  }
-  .info-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-  .info-text { font-size: 12px; color: var(--gold); font-weight: 500; line-height: 1.5; }
-
-  .spinner {
-    display: inline-block; width: 18px; height: 18px;
-    border: 2.5px solid rgba(255,255,255,0.4); border-top-color: white;
-    border-radius: 50%; animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-btn {
-    grid-column: 1 / -1; padding: 16px; border-radius: 12px;
-    background: var(--green); color: white; border: none;
-    font-family: inherit; font-size: 15px; font-weight: 700;
-    display: none; align-items: center; justify-content: center; gap: 10px;
-  }
-  .divider { width: 100%; height: 1px; background: var(--border); margin: 4px 0 14px; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px;color:var(--text);}
+  .header{width:100%;max-width:420px;text-align:center;margin-bottom:24px;}
+  .logo-wrap{display:inline-flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border);border-radius:50px;padding:8px 18px 8px 10px;margin-bottom:16px;box-shadow:var(--shadow);}
+  .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .logo-text{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+  .logo-text span{display:block;font-weight:500;color:var(--gray);font-size:11px;}
+  .clock-card{width:100%;max-width:420px;background:linear-gradient(135deg,#0f4c2a 0%,#1a7a4a 60%,#22a05e 100%);border-radius:var(--radius);padding:20px 24px;color:white;margin-bottom:16px;position:relative;overflow:hidden;}
+  .clock-card::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(255,255,255,0.06);border-radius:50%;}
+  .clock-inner{display:flex;justify-content:space-between;align-items:flex-end;}
+  .clock-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;opacity:0.7;margin-bottom:4px;}
+  .clock-time{font-size:44px;font-weight:800;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+  .clock-date{font-size:13px;opacity:0.75;font-weight:500;}
+  .jam-kerja{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;text-align:center;line-height:1.6;flex-shrink:0;}
+  .jam-kerja .jk-title{opacity:0.7;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+  .jam-kerja .jk-row{display:flex;gap:6px;align-items:center;}
+  .jam-kerja .jk-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .jam-kerja .jk-dot.masuk{background:#86efac;}
+  .jam-kerja .jk-dot.pulang{background:#93c5fd;}
+  .form-card{width:100%;max-width:420px;background:var(--white);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:16px;}
+  .form-title{font-size:15px;font-weight:700;margin-bottom:18px;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .form-title::before{content:'';display:block;width:4px;height:18px;background:var(--green);border-radius:2px;}
+  .field{margin-bottom:14px;}
+  label{display:block;font-size:12px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
+  input,select,textarea{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;color:var(--text);background:var(--bg);outline:none;transition:border-color 0.2s,box-shadow 0.2s;-webkit-appearance:none;appearance:none;}
+  textarea{resize:none;height:80px;line-height:1.5;}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;}
+  input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,122,74,0.1);background:white;}
+  .divisi-tag{display:none;margin-top:8px;padding:8px 12px;background:var(--green-light);border-radius:8px;font-size:13px;font-weight:600;color:var(--green);align-items:center;gap:6px;}
+  .divisi-tag.show{display:flex;}
+  .foto-area{border:2px dashed var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);position:relative;}
+  .foto-area:hover{border-color:var(--green);background:var(--green-light);}
+  .foto-area input[type="file"]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:none;background:none;}
+  .foto-placeholder{pointer-events:none;}
+  .foto-placeholder .foto-icon{font-size:28px;margin-bottom:6px;}
+  .foto-placeholder p{font-size:13px;color:var(--gray);font-weight:500;}
+  .foto-placeholder small{font-size:11px;color:var(--gray);}
+  .foto-preview{display:none;position:relative;border-radius:10px;overflow:hidden;}
+  .foto-preview img{width:100%;max-height:200px;object-fit:cover;border-radius:10px;display:block;}
+  .foto-preview .foto-change{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:white;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;cursor:pointer;}
+  .ket-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .ket-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--gray);background:var(--bg);transition:all 0.15s;user-select:none;}
+  .ket-pill input{display:none;}
+  .ket-pill .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--border);transition:background 0.15s;}
+  .ket-pill.selected{border-color:var(--green);background:var(--green-light);color:var(--green);}
+  .ket-pill.selected .dot{background:var(--green);}
+  .ket-pill.ket-sakit.selected{border-color:var(--red);background:var(--red-light);color:var(--red);}
+  .ket-pill.ket-sakit.selected .dot{background:var(--red);}
+  .ket-pill.ket-izin.selected{border-color:var(--gold);background:var(--gold-light);color:var(--gold);}
+  .ket-pill.ket-izin.selected .dot{background:var(--gold);}
+  .ket-pill.ket-dinas.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
+  .ket-pill.ket-dinas.selected .dot{background:var(--blue);}
+  .ket-pill.ket-lembur.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple);}
+  .ket-pill.ket-lembur.selected .dot{background:var(--purple);}
+  .action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+  .btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px 12px;border-radius:12px;border:2px solid transparent;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
+  .btn-icon{font-size:26px;line-height:1;}
+  .btn-hadir{background:var(--green-light);color:var(--green);border-color:rgba(26,122,74,0.2);}
+  .btn-hadir:hover,.btn-hadir:active{background:var(--green);color:white;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,122,74,0.3);}
+  .btn-pulang{background:var(--blue-light);color:var(--blue);border-color:rgba(26,79,160,0.2);}
+  .btn-pulang:hover,.btn-pulang:active{background:var(--blue);color:white;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,79,160,0.3);}
+  .status-card{display:none;width:100%;max-width:420px;border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;border:1.5px solid;animation:slideIn 0.35s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
+  .status-card.success{background:var(--green-light);border-color:rgba(26,122,74,0.3);color:var(--green);display:block;}
+  .status-card.error{background:var(--red-light);border-color:rgba(192,57,43,0.3);color:var(--red);display:block;}
+  .status-card.warn{background:var(--gold-light);border-color:rgba(201,134,10,0.3);color:var(--gold);display:block;}
+  .status-icon{font-size:32px;margin-bottom:8px;}
+  .status-title{font-size:17px;font-weight:700;margin-bottom:4px;}
+  .status-body{font-size:13px;opacity:0.85;line-height:1.5;}
+  .info-card{width:100%;max-width:420px;background:var(--gold-light);border:1px solid rgba(201,134,10,0.2);border-radius:12px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;}
+  .info-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .info-text{font-size:12px;color:var(--gold);font-weight:500;line-height:1.5;}
+  .spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-btn{grid-column:1/-1;padding:16px;border-radius:12px;background:var(--green);color:white;border:none;font-family:inherit;font-size:15px;font-weight:700;display:none;align-items:center;justify-content:center;gap:10px;}
+  .divider{width:100%;height:1px;background:var(--border);margin:4px 0 14px;}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="logo-wrap">
     <div class="logo-icon">✈️</div>
@@ -231,7 +125,6 @@
 
 <div class="form-card">
   <div class="form-title">Data Pegawai</div>
-
   <div class="field">
     <label>Nama Pegawai</label>
     <select id="nama" onchange="pilihPegawai(this.value)">
@@ -248,9 +141,7 @@
     </select>
     <div class="divisi-tag" id="divisiTag">🏢 <span id="divisiLabel"></span></div>
   </div>
-
   <div class="divider"></div>
-
   <div class="field">
     <label>📷 Foto Kehadiran</label>
     <div class="foto-area">
@@ -266,189 +157,182 @@
       </div>
     </div>
   </div>
-
   <div class="divider"></div>
-
   <div class="field">
     <label>Keterangan Kehadiran</label>
     <div class="ket-grid">
-      <label class="ket-pill selected" id="pill-hadir" onclick="pilihKet('Hadir')">
-        <span class="dot"></span> ✅ Hadir
-      </label>
-      <label class="ket-pill ket-sakit" id="pill-sakit" onclick="pilihKet('Sakit')">
-        <span class="dot"></span> 🤒 Sakit
-      </label>
-      <label class="ket-pill ket-izin" id="pill-izin" onclick="pilihKet('Izin')">
-        <span class="dot"></span> 📋 Izin
-      </label>
-      <label class="ket-pill ket-dinas" id="pill-dinas" onclick="pilihKet('Perjalanan Dinas')">
-        <span class="dot"></span> 🧳 Perjalanan Dinas
-      </label>
-      <label class="ket-pill ket-lembur" id="pill-lembur" onclick="pilihKet('Lembur')" style="grid-column:1/-1">
-        <span class="dot"></span> 🌙 Lembur
-      </label>
+      <label class="ket-pill selected" id="pill-hadir" onclick="pilihKet('Hadir')"><span class="dot"></span> ✅ Hadir</label>
+      <label class="ket-pill ket-sakit" id="pill-sakit" onclick="pilihKet('Sakit')"><span class="dot"></span> 🤒 Sakit</label>
+      <label class="ket-pill ket-izin" id="pill-izin" onclick="pilihKet('Izin')"><span class="dot"></span> 📋 Izin</label>
+      <label class="ket-pill ket-dinas" id="pill-dinas" onclick="pilihKet('Perjalanan Dinas')"><span class="dot"></span> 🧳 Perjalanan Dinas</label>
+      <label class="ket-pill ket-lembur" id="pill-lembur" onclick="pilihKet('Lembur')" style="grid-column:1/-1"><span class="dot"></span> 🌙 Lembur</label>
     </div>
     <input type="hidden" id="keterangan" value="Hadir"/>
   </div>
-
   <div class="field">
     <label>📝 Catatan Tambahan (opsional)</label>
     <textarea id="notes" placeholder="Contoh: izin karena urusan keluarga, lembur sampai jam 20.00, dll..."></textarea>
   </div>
-
   <div class="action-buttons" id="actionButtons">
-    <button class="btn btn-hadir" onclick="submitAbsensi('Hadir')">
-      <span class="btn-icon">🟢</span>Hadir
-    </button>
-    <button class="btn btn-pulang" onclick="submitAbsensi('Pulang')">
-      <span class="btn-icon">🔵</span>Pulang
-    </button>
-    <button class="loading-btn" id="loadingBtn">
-      <span class="spinner"></span> Menyimpan...
-    </button>
+    <button class="btn btn-hadir" onclick="submitAbsensi('Hadir')"><span class="btn-icon">🟢</span>Hadir</button>
+    <button class="btn btn-pulang" onclick="submitAbsensi('Pulang')"><span class="btn-icon">🔵</span>Pulang</button>
+    <button class="loading-btn" id="loadingBtn"><span class="spinner"></span> Menyimpan...</button>
   </div>
 </div>
 
 <div class="info-card">
   <span class="info-icon">💡</span>
-  <div class="info-text">
-    Jam masuk: <b>08.00 WIB</b> &nbsp;|&nbsp; Jam pulang: <b>16.00 WIB</b><br>
-    Data absensi tersimpan otomatis ke Google Sheets.
-  </div>
+  <div class="info-text">Jam masuk: <b>08.00 WIB</b> &nbsp;|&nbsp; Jam pulang: <b>16.00 WIB</b><br>Data absensi tersimpan otomatis ke Google Sheets.</div>
 </div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_CeYmocTksvGQ_k4ZLLFurX2jDget_klyAP3-bniTnrrS9n9z4ubuUOCAqEjd9y3lCw/exec";
 
-  // Data pegawai
   const PEGAWAI = {
-    "Teguh Muhammad Firdaus"   : "Direktur Utama",
-    "Muhamad Arif Basuni"      : "Direktur Operasional",
-    "Cepi Sutanto"             : "Direktur Marketing",
-    "Azhar Dzaky Muhamad HM"   : "Manajer Operasional",
-    "Fithri Amalia Rahma"      : "Manajer Keuangan",
-    "Nabila Azahra"            : "Staff Marketing Media",
-    "Andy Rohaendy"            : "Staff Marketing",
-    "Zenal Ali Mansur"         : "Staff Marketing",
-    "Dedi"                     : "Staff Operasional"
+    "Teguh Muhammad Firdaus":"Direktur Utama",
+    "Muhamad Arif Basuni":"Direktur Operasional",
+    "Cepi Sutanto":"Direktur Marketing",
+    "Azhar Dzaky Muhamad HM":"Manajer Operasional",
+    "Fithri Amalia Rahma":"Manajer Keuangan",
+    "Nabila Azahra":"Staff Marketing Media",
+    "Andy Rohaendy":"Staff Marketing",
+    "Zenal Ali Mansur":"Staff Marketing",
+    "Dedi":"Staff Operasional"
   };
 
-  let fotoBase64 = "";
-  let selectedNama = "";
-  let selectedDivisi = "";
+  let fotoBase64="", selectedNama="", selectedDivisi="";
 
-  // Jam real-time
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('jam').textContent = now.toLocaleTimeString('id-ID', {
-      hour:'2-digit', minute:'2-digit', second:'2-digit', timeZone:'Asia/Jakarta'
-    });
-    document.getElementById('tanggal').textContent = now.toLocaleDateString('id-ID', {
-      weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Jakarta'
-    });
+  function updateClock(){
+    const now=new Date();
+    document.getElementById('jam').textContent=now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'Asia/Jakarta'});
+    document.getElementById('tanggal').textContent=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Jakarta'});
   }
-  updateClock();
-  setInterval(updateClock, 1000);
+  updateClock(); setInterval(updateClock,1000);
 
-  // Pilih pegawai dari dropdown
-  function pilihPegawai(val) {
-    if (!val) {
-      selectedNama = ''; selectedDivisi = '';
-      document.getElementById('divisiTag').classList.remove('show');
-      return;
-    }
-    const [nama, divisi] = val.split('|');
-    selectedNama   = nama;
-    selectedDivisi = divisi;
-    document.getElementById('divisiLabel').textContent = divisi;
+  function pilihPegawai(val){
+    if(!val){selectedNama='';selectedDivisi='';document.getElementById('divisiTag').classList.remove('show');return;}
+    const [nama,divisi]=val.split('|');
+    selectedNama=nama; selectedDivisi=divisi;
+    document.getElementById('divisiLabel').textContent=divisi;
     document.getElementById('divisiTag').classList.add('show');
   }
 
-  // Preview foto
-  function previewFoto(input) {
-    if (!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      fotoBase64 = e.target.result;
-      document.getElementById('fotoImg').src = fotoBase64;
-      document.getElementById('fotoPlaceholder').style.display = 'none';
-      document.getElementById('fotoPreview').style.display = 'block';
+  function previewFoto(input){
+    if(!input.files||!input.files[0])return;
+    const reader=new FileReader();
+    reader.onload=e=>{
+      fotoBase64=e.target.result;
+      document.getElementById('fotoImg').src=fotoBase64;
+      document.getElementById('fotoPlaceholder').style.display='none';
+      document.getElementById('fotoPreview').style.display='block';
     };
     reader.readAsDataURL(input.files[0]);
   }
 
-  function gantiiFoto(e) {
-    e.stopPropagation();
-    document.getElementById('fotoInput').click();
-  }
+  function gantiiFoto(e){e.stopPropagation();document.getElementById('fotoInput').click();}
 
-  // Pilih keterangan
-  function pilihKet(ket) {
-    document.getElementById('keterangan').value = ket;
-    document.querySelectorAll('.ket-pill').forEach(p => p.classList.remove('selected'));
-    const map = { 'Hadir':'hadir','Sakit':'sakit','Izin':'izin','Perjalanan Dinas':'dinas','Lembur':'lembur' };
-    document.getElementById('pill-' + map[ket])?.classList.add('selected');
+  function pilihKet(ket){
+    document.getElementById('keterangan').value=ket;
+    document.querySelectorAll('.ket-pill').forEach(p=>p.classList.remove('selected'));
+    const map={'Hadir':'hadir','Sakit':'sakit','Izin':'izin','Perjalanan Dinas':'dinas','Lembur':'lembur'};
+    document.getElementById('pill-'+map[ket])?.classList.add('selected');
   }
   pilihKet('Hadir');
 
-  // Submit
-  async function submitAbsensi(tipe) {
-    if (!selectedNama) {
-      showStatus('error','⚠️','Nama belum dipilih','Silakan pilih nama kamu dari dropdown.');
-      return;
-    }
-    if (!fotoBase64) {
-      showStatus('error','📸','Foto belum diambil','Silakan ambil foto selfie kehadiran dulu.');
-      return;
-    }
 
-    document.getElementById('actionButtons').style.display = 'none';
-    document.getElementById('loadingBtn').style.display = 'flex';
+  function parseTanggal(raw) {
+    if (!raw) return '';
+    const s = String(raw);
+    if (s.match(/^\d{2}\/\d{2}\/\d{4}$/)) return s;
+    if (s.includes('T') || s.match(/^\d{4}-/)) {
+      const d = new Date(s);
+      if (!isNaN(d)) {
+        const wib = new Date(d.getTime() + 7*60*60*1000);
+        const dd = String(wib.getUTCDate()).padStart(2,'0');
+        const mm = String(wib.getUTCMonth()+1).padStart(2,'0');
+        return dd+'/'+mm+'/'+wib.getUTCFullYear();
+      }
+    }
+    return s;
+  }
+
+  // JSONP helper — solusi CORS
+  function jsonpFetch(url){
+    return new Promise((resolve,reject)=>{
+      const cbName='cb_'+Date.now();
+      const script=document.createElement('script');
+      const timeout=setTimeout(()=>{
+        delete window[cbName]; script.remove();
+        reject(new Error('Timeout'));
+      },15000);
+      window[cbName]=data=>{
+        clearTimeout(timeout);
+        delete window[cbName]; script.remove();
+        resolve(data);
+      };
+      script.src=url+(url.includes('?')?'&':'?')+'callback='+cbName;
+      script.onerror=()=>{clearTimeout(timeout);reject(new Error('Script error'));};
+      document.head.appendChild(script);
+    });
+  }
+
+  async function submitAbsensi(tipe){
+    if(!selectedNama){showStatus('error','⚠️','Nama belum dipilih','Silakan pilih nama kamu dari dropdown.');return;}
+    if(!fotoBase64){showStatus('error','📸','Foto belum diambil','Silakan ambil foto selfie kehadiran dulu.');return;}
+
+    document.getElementById('actionButtons').style.display='none';
+    document.getElementById('loadingBtn').style.display='flex';
     hideStatus();
 
-    const now = new Date();
-    const ket   = document.getElementById('keterangan').value || 'Hadir';
-    const notes = document.getElementById('notes').value.trim();
+    const now=new Date();
+    const ket=document.getElementById('keterangan').value||'Hadir';
+    const notes=document.getElementById('notes').value.trim();
 
-    const params = new URLSearchParams({
-      nama: selectedNama, divisi: selectedDivisi,
-      tipe, keterangan: ket, notes,
-      waktu: now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
-      timestamp: now.getTime()
+    const params=new URLSearchParams({
+      nama:selectedNama, divisi:selectedDivisi,
+      tipe, keterangan:ket, notes,
+      waktu:now.toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}),
+      timestamp:now.getTime()
     });
 
-    try {
-      await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
-      const emoji = tipe === 'Hadir' ? '✅' : '👋';
-      const judul = tipe === 'Hadir' ? 'Absensi Masuk Berhasil!' : 'Absensi Pulang Berhasil!';
-      const pesan = `Hai, ${selectedNama}!\nAbsensi ${tipe.toLowerCase()} (${ket}) pada ${now.toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'})} telah tercatat.`;
-      showStatus('success', emoji, judul, pesan);
-      // Reset form
-      document.getElementById('nama').value = '';
-      document.getElementById('notes').value = '';
-      document.getElementById('divisiTag').classList.remove('show');
-      fotoBase64 = ''; selectedNama = ''; selectedDivisi = '';
-      document.getElementById('fotoImg').src = '';
-      document.getElementById('fotoPlaceholder').style.display = 'block';
-      document.getElementById('fotoPreview').style.display = 'none';
-      pilihKet('Hadir');
-    } catch(e) {
+    try{
+      const data=await jsonpFetch(SCRIPT_URL+'?'+params.toString());
+
+      if(data.status==='duplikat'){
+        showStatus('warn','⚠️','Sudah Absen Hari Ini',data.message);
+      } else if(data.status==='ok'){
+        const emoji=tipe==='Hadir'?'✅':'👋';
+        const judul=tipe==='Hadir'?'Absensi Masuk Berhasil!':'Absensi Pulang Berhasil!';
+        showStatus('success',emoji,judul,`Hai, ${selectedNama}!\nAbsensi ${tipe.toLowerCase()} (${ket}) pada ${now.toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'})} telah tercatat.`);
+        // Reset
+        document.getElementById('nama').value='';
+        document.getElementById('notes').value='';
+        document.getElementById('divisiTag').classList.remove('show');
+        fotoBase64=''; selectedNama=''; selectedDivisi='';
+        document.getElementById('fotoImg').src='';
+        document.getElementById('fotoPlaceholder').style.display='block';
+        document.getElementById('fotoPreview').style.display='none';
+        pilihKet('Hadir');
+      } else {
+        showStatus('error','❌','Gagal',data.message||'Terjadi kesalahan.');
+      }
+    } catch(e){
       showStatus('error','❌','Gagal Mengirim','Periksa koneksi internet kamu, lalu coba lagi.');
-    } finally {
-      document.getElementById('loadingBtn').style.display = 'none';
-      document.getElementById('actionButtons').style.display = 'grid';
+    } finally{
+      document.getElementById('loadingBtn').style.display='none';
+      document.getElementById('actionButtons').style.display='grid';
     }
   }
 
-  function showStatus(type, icon, title, body) {
-    const card = document.getElementById('statusCard');
-    card.className = 'status-card ' + type;
-    document.getElementById('statusIcon').textContent  = icon;
-    document.getElementById('statusTitle').textContent = title;
-    document.getElementById('statusBody').textContent  = body;
-    card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  function showStatus(type,icon,title,body){
+    const card=document.getElementById('statusCard');
+    card.className='status-card '+type;
+    document.getElementById('statusIcon').textContent=icon;
+    document.getElementById('statusTitle').textContent=title;
+    document.getElementById('statusBody').textContent=body;
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-  function hideStatus() { document.getElementById('statusCard').className = 'status-card'; }
+  function hideStatus(){document.getElementById('statusCard').className='status-card';}
 </script>
 </body>
 </html>
