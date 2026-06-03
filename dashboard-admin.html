@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Admin — Assyifa Tour & Travel</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a7a4a; --green-light: #e8f5ee; --green-mid: #2d9e62;
+    --blue: #1a4fa0; --blue-light: #e8f0fb;
+    --gold: #c9860a; --gold-light: #fdf3e0;
+    --red: #c0392b; --red-light: #fdecea;
+    --purple: #6d28d9; --purple-light: #ede9fe;
+    --gray: #6b7280; --border: #e5e7eb;
+    --bg: #f7f8fa; --white: #fff; --text: #111827;
+    --shadow: 0 4px 24px rgba(0,0,0,0.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Topbar */
+  .topbar {
+    background: linear-gradient(135deg, #0f4c2a, #1a7a4a);
+    padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    color: white; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-logo { font-size: 22px; }
+  .topbar-title { font-size: 15px; font-weight: 800; line-height: 1.2; }
+  .topbar-title small { font-size: 11px; font-weight: 500; opacity: 0.7; display: block; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .topbar-date { font-size: 12px; opacity: 0.8; text-align: right; }
+  .btn-refresh {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+    color: white; border-radius: 8px; padding: 7px 14px;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-refresh:hover { background: rgba(255,255,255,0.25); }
+
+  /* Auth gate */
+  .auth-gate {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .auth-card {
+    background: var(--white); border-radius: 20px; padding: 36px 32px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    width: 100%; max-width: 360px; text-align: center;
+  }
+  .auth-icon { font-size: 48px; margin-bottom: 12px; }
+  .auth-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .auth-sub { font-size: 13px; color: var(--gray); margin-bottom: 24px; }
+  .auth-input {
+    width: 100%; padding: 13px 16px; border: 1.5px solid var(--border);
+    border-radius: 10px; font-family: inherit; font-size: 15px;
+    outline: none; margin-bottom: 12px; text-align: center; letter-spacing: 2px;
+    transition: border-color 0.2s;
+  }
+  .auth-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,122,74,0.1); }
+  .auth-btn {
+    width: 100%; padding: 14px; background: var(--green); color: white;
+    border: none; border-radius: 10px; font-family: inherit;
+    font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+  }
+  .auth-btn:hover { opacity: 0.9; }
+  .auth-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
+
+  /* Main content */
+  .main { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
+
+  /* Filter bar */
+  .filter-bar {
+    background: var(--white); border-radius: 14px; padding: 16px 20px;
+    border: 1px solid var(--border); margin-bottom: 20px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .filter-bar label { font-size: 12px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 0.6px; }
+  .filter-bar input, .filter-bar select {
+    padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: inherit; font-size: 13px; color: var(--text); background: var(--bg);
+    outline: none; -webkit-appearance: none; appearance: none;
+    transition: border-color 0.2s;
+  }
+  .filter-bar select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px;
+  }
+  .filter-bar input:focus, .filter-bar select:focus { border-color: var(--green); }
+  .btn-load {
+    padding: 9px 20px; background: var(--green); color: white;
+    border: none; border-radius: 8px; font-family: inherit;
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-load:hover { opacity: 0.88; }
+
+  /* Stats grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--white); border-radius: 14px; padding: 18px 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .stat-emoji { font-size: 24px; margin-bottom: 6px; }
+  .stat-num { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 12px; color: var(--gray); font-weight: 500; }
+  .stat-card.c-green .stat-num { color: var(--green); }
+  .stat-card.c-red   .stat-num { color: var(--red); }
+  .stat-card.c-gold  .stat-num { color: var(--gold); }
+  .stat-card.c-blue  .stat-num { color: var(--blue); }
+  .stat-card.c-purple .stat-num { color: var(--purple); }
+  .stat-card.c-orange .stat-num { color: #e67e22; }
+
+  /* Table */
+  .table-card {
+    background: var(--white); border-radius: 14px;
+    border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow);
+  }
+  .table-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  .table-title { font-size: 14px; font-weight: 700; }
+  .table-count { font-size: 12px; color: var(--gray); background: var(--bg); padding: 4px 12px; border-radius: 20px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    background: #f9fafb; padding: 11px 14px; text-align: left;
+    font-size: 11px; font-weight: 700; color: var(--gray);
+    text-transform: uppercase; letter-spacing: 0.6px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  td { padding: 12px 14px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9fafb; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  }
+  .badge-hadir   { background: var(--green-light); color: var(--green); }
+  .badge-pulang  { background: var(--blue-light);  color: var(--blue); }
+  .badge-sakit   { background: var(--red-light);   color: var(--red); }
+  .badge-izin    { background: var(--gold-light);  color: var(--gold); }
+  .badge-dinas   { background: var(--blue-light);  color: var(--blue); }
+  .badge-lembur  { background: var(--purple-light);color: var(--purple); }
+  .badge-terlambat { background: #fef3c7; color: #d97706; }
+  .badge-tepat   { background: var(--green-light); color: var(--green); }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--gray); }
+  .empty-state .e-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Loading */
+  .loading-state { text-align: center; padding: 48px 24px; color: var(--gray); }
+  .spinner-lg {
+    display: inline-block; width: 32px; height: 32px;
+    border: 3px solid var(--border); border-top-color: var(--green);
+    border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Search box */
+  .search-wrap { position: relative; }
+  .search-wrap input { padding-left: 36px; }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
+
+  @media (max-width: 600px) {
+    .main { padding: 16px; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .topbar-date { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div class="auth-gate" id="authGate">
+  <div class="auth-card">
+    <div class="auth-icon">🔐</div>
+    <div class="auth-title">Admin Dashboard</div>
+    <div class="auth-sub">Assyifa Tour & Travel<br>Masukkan password untuk lanjut</div>
+    <input type="password" class="auth-input" id="passInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') cekPass()"/>
+    <button class="auth-btn" onclick="cekPass()">Masuk Dashboard</button>
+    <div class="auth-err" id="authErr">❌ Password salah, coba lagi.</div>
+  </div>
+</div>
+
+<!-- Topbar -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="topbar-left">
+    <div class="topbar-logo">✈️</div>
+    <div class="topbar-title">
+      Dashboard Admin
+      <small>Assyifa Tour & Travel</small>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-date" id="topbarDate"></div>
+    <button class="btn-refresh" onclick="loadData()">🔄 Refresh</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main" id="mainContent">
+
+  <!-- Filter -->
+  <div class="filter-bar">
+    <div>
+      <label>Tanggal</label><br>
+      <input type="date" id="filterTgl"/>
+    </div>
+    <div>
+      <label>Divisi</label><br>
+      <select id="filterDivisi">
+        <option value="">Semua Divisi</option>
+        <option>Marketing</option>
+        <option>Operasional</option>
+        <option>Keuangan</option>
+      </select>
+    </div>
+    <div>
+      <label>Keterangan</label><br>
+      <select id="filterKet">
+        <option value="">Semua</option>
+        <option>Hadir</option>
+        <option>Sakit</option>
+        <option>Izin</option>
+        <option>Perjalanan Dinas</option>
+        <option>Lembur</option>
+      </select>
+    </div>
+    <div class="search-wrap">
+      <label>Cari Nama</label><br>
+      <span class="search-icon">🔍</span>
+      <input type="text" id="filterNama" placeholder="Nama pegawai..."/>
+    </div>
+    <div style="display:flex;align-items:flex-end">
+      <button class="btn-load" onclick="loadData()">Tampilkan Data</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card c-green"><div class="stat-emoji">✅</div><div class="stat-num" id="s-hadir">-</div><div class="stat-label">Hadir</div></div>
+    <div class="stat-card c-orange"><div class="stat-emoji">⏰</div><div class="stat-num" id="s-terlambat">-</div><div class="stat-label">Terlambat</div></div>
+    <div class="stat-card c-red"><div class="stat-emoji">🤒</div><div class="stat-num" id="s-sakit">-</div><div class="stat-label">Sakit</div></div>
+    <div class="stat-card c-gold"><div class="stat-emoji">📋</div><div class="stat-num" id="s-izin">-</div><div class="stat-label">Izin</div></div>
+    <div class="stat-card c-blue"><div class="stat-emoji">🧳</div><div class="stat-num" id="s-dinas">-</div><div class="stat-label">Perjalanan Dinas</div></div>
+    <div class="stat-card c-purple"><div class="stat-emoji">🌙</div><div class="stat-num" id="s-lembur">-</div><div class="stat-label">Lembur</div></div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">📋 Data Absensi</div>
+      <div class="table-count" id="tableCount">— entri</div>
+    </div>
+    <div class="table-wrap">
+      <div class="loading-state" id="loadingState">
+        <div class="spinner-lg"></div>
+        <p>Memuat data...</p>
+      </div>
+      <table id="dataTable" style="display:none">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Hari</th>
+            <th>Jam</th>
+            <th>Nama</th>
+            <th>Divisi</th>
+            <th>Tipe</th>
+            <th>Keterangan</th>
+            <th>Status Waktu</th>
+            <th>Catatan</th>
+            <th>Foto</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none">
+        <div class="e-icon">📭</div>
+        <p>Tidak ada data untuk filter yang dipilih.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // =============================================
+  // KONFIGURASI — WAJIB DIISI
+  // =============================================
+  const SCRIPT_URL  = "https://script.google.com/macros/s/AKfycbyY6sO8F_x3-RCC4gVDznbPkiL0GY5-YQNEQ53TQ-e-JRo-N3-GRDOUZwm4FXDU-vM9rg/exec";
+  const ADMIN_PASS  = "assyifa2025"; // Ganti password sesuai keinginan
+
+  // =============================================
+  // AUTH
+  // =============================================
+  function cekPass() {
+    const val = document.getElementById('passInput').value;
+    if (val === ADMIN_PASS) {
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('topbar').style.display = 'flex';
+      document.getElementById('mainContent').style.display = 'block';
+      updateTopbarDate();
+      setInterval(updateTopbarDate, 1000);
+      // Set tanggal default ke hari ini
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' });
+      document.getElementById('filterTgl').value = today;
+      loadData();
+    } else {
+      document.getElementById('authErr').style.display = 'block';
+      document.getElementById('passInput').value = '';
+      document.getElementById('passInput').focus();
+    }
+  }
+
+  function updateTopbarDate() {
+    document.getElementById('topbarDate').textContent = new Date().toLocaleString('id-ID', {
+      weekday:'long', day:'numeric', month:'long', year:'numeric',
+      hour:'2-digit', minute:'2-digit', timeZone:'Asia/Jakarta'
+    });
+  }
+
+  // =============================================
+  // LOAD DATA dari Google Apps Script
+  // =============================================
+  let allData = [];
+
+  async function loadData() {
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('dataTable').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+
+    try {
+      const url = SCRIPT_URL + '?action=getData&t=' + Date.now();
+      const res = await fetch(url);
+      const json = await res.json();
+      allData = json.data || [];
+      renderTable();
+    } catch(e) {
+      document.getElementById('loadingState').innerHTML =
+        '<div style="text-align:center;padding:40px;color:var(--red)">❌ Gagal memuat data.<br><small>Pastikan SCRIPT_URL sudah diisi dengan benar.</small></div>';
+    }
+  }
+
+  // =============================================
+  // RENDER TABLE
+  // =============================================
+  function renderTable() {
+    const tgl    = document.getElementById('filterTgl').value;
+    const divisi = document.getElementById('filterDivisi').value;
+    const ket    = document.getElementById('filterKet').value;
+    const nama   = document.getElementById('filterNama').value.toLowerCase().trim();
+
+    // Filter
+    let filtered = allData.filter(row => {
+      if (tgl && row[0] !== formatTgl(tgl)) return false;
+      if (divisi && row[4] !== divisi) return false;
+      if (ket && row[6] !== ket) return false;
+      if (nama && !row[3].toLowerCase().includes(nama)) return false;
+      return true;
+    });
+
+    // Stats (hanya baris Hadir/tipe)
+    const hadirRows = filtered.filter(r => r[6] === 'Hadir');
+    document.getElementById('s-hadir').textContent    = hadirRows.length;
+    document.getElementById('s-terlambat').textContent = filtered.filter(r => String(r[7]).includes('Terlambat')).length;
+    document.getElementById('s-sakit').textContent    = filtered.filter(r => r[6] === 'Sakit').length;
+    document.getElementById('s-izin').textContent     = filtered.filter(r => r[6] === 'Izin').length;
+    document.getElementById('s-dinas').textContent    = filtered.filter(r => r[6] === 'Perjalanan Dinas').length;
+    document.getElementById('s-lembur').textContent   = filtered.filter(r => r[6] === 'Lembur').length;
+
+    document.getElementById('tableCount').textContent = filtered.length + ' entri';
+    document.getElementById('loadingState').style.display = 'none';
+
+    if (filtered.length === 0) {
+      document.getElementById('emptyState').style.display = 'block';
+      document.getElementById('dataTable').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('dataTable').style.display = 'table';
+
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = filtered.map((row, i) => {
+      const tipeB  = row[5] === 'Hadir'
+        ? '<span class="badge badge-hadir">🟢 Hadir</span>'
+        : '<span class="badge badge-pulang">🔵 Pulang</span>';
+
+      const ketMap = {
+        'Hadir':'<span class="badge badge-hadir">✅ Hadir</span>',
+        'Sakit':'<span class="badge badge-sakit">🤒 Sakit</span>',
+        'Izin':'<span class="badge badge-izin">📋 Izin</span>',
+        'Perjalanan Dinas':'<span class="badge badge-dinas">🧳 Dinas</span>',
+        'Lembur':'<span class="badge badge-lembur">🌙 Lembur</span>'
+      };
+      const ketB = ketMap[row[6]] || row[6];
+
+      const statusB = String(row[7]).includes('Terlambat')
+        ? `<span class="badge badge-terlambat">⏰ ${row[7]}</span>`
+        : row[7] ? `<span class="badge badge-tepat">✅ ${row[7]}</span>` : '-';
+
+      const fotoB = row[9] === '✓ Ada'
+        ? '<span class="badge" style="background:#e8f5ee;color:#1a7a4a">📷 Ada</span>'
+        : '<span style="color:#aaa;font-size:12px">-</span>';
+
+      return `<tr>
+        <td style="color:var(--gray);font-size:12px">${i+1}</td>
+        <td><b>${row[0]}</b></td>
+        <td style="color:var(--gray)">${row[1]}</td>
+        <td><b>${row[2]}</b></td>
+        <td>${row[3]}</td>
+        <td><span style="font-size:12px;color:var(--gray)">${row[4]}</span></td>
+        <td>${tipeB}</td>
+        <td>${ketB}</td>
+        <td>${statusB}</td>
+        <td style="font-size:12px;color:var(--gray);max-width:160px">${row[8] || '-'}</td>
+        <td>${fotoB}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function formatTgl(isoDate) {
+    if (!isoDate) return '';
+    const [y,m,d] = isoDate.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  // Filter live saat ketik nama
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('filterNama').addEventListener('input', () => {
+      if (allData.length) renderTable();
+    });
+  });
+</script>
+</body>
+</html>
