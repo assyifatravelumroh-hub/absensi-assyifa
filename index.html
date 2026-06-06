@@ -12,17 +12,28 @@
     --gold:#c9860a;--gold-light:#fdf3e0;
     --red:#c0392b;--red-light:#fdecea;
     --purple:#6d28d9;--purple-light:#ede9fe;
+    --orange:#d97706;--orange-light:#fef3c7;
     --gray:#6b7280;--border:#e5e7eb;
     --bg:#f7f8fa;--white:#fff;--text:#111827;
     --radius:16px;--shadow:0 4px 24px rgba(0,0,0,0.08);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px;color:var(--text);}
+
+  /* Header */
   .header{width:100%;max-width:420px;text-align:center;margin-bottom:24px;}
-  .logo-wrap{display:inline-flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border);border-radius:50px;padding:8px 18px 8px 10px;margin-bottom:16px;box-shadow:var(--shadow);}
+  .logo-wrap{display:inline-flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border);border-radius:50px;padding:8px 18px 8px 10px;margin-bottom:12px;box-shadow:var(--shadow);}
   .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
   .logo-text{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
   .logo-text span{display:block;font-weight:500;color:var(--gray);font-size:11px;}
+
+  /* Nav menu */
+  .nav-menu{display:flex;gap:8px;justify-content:center;margin-bottom:4px;}
+  .nav-btn{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+  .nav-btn:hover{border-color:var(--green);color:var(--green);}
+  .nav-btn.active{background:var(--green);color:white;border-color:var(--green);}
+
+  /* Clock */
   .clock-card{width:100%;max-width:420px;background:linear-gradient(135deg,#0f4c2a 0%,#1a7a4a 60%,#22a05e 100%);border-radius:var(--radius);padding:20px 24px;color:white;margin-bottom:16px;position:relative;overflow:hidden;}
   .clock-card::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(255,255,255,0.06);border-radius:50%;}
   .clock-inner{display:flex;justify-content:space-between;align-items:flex-end;}
@@ -35,6 +46,19 @@
   .jam-kerja .jk-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
   .jam-kerja .jk-dot.masuk{background:#86efac;}
   .jam-kerja .jk-dot.pulang{background:#93c5fd;}
+
+  /* Status card */
+  .status-card{display:none;width:100%;max-width:420px;border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;border:1.5px solid;animation:slideIn 0.35s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
+  .status-card.success{background:var(--green-light);border-color:rgba(26,122,74,0.3);color:var(--green);display:block;}
+  .status-card.error{background:var(--red-light);border-color:rgba(192,57,43,0.3);color:var(--red);display:block;}
+  .status-card.warn{background:var(--gold-light);border-color:rgba(201,134,10,0.3);color:var(--gold);display:block;}
+  .status-card.info{background:var(--blue-light);border-color:rgba(26,79,160,0.3);color:var(--blue);display:block;}
+  .status-icon{font-size:28px;margin-bottom:6px;}
+  .status-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .status-body{font-size:13px;opacity:0.85;line-height:1.5;}
+
+  /* Form card */
   .form-card{width:100%;max-width:420px;background:var(--white);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:16px;}
   .form-title{font-size:15px;font-weight:700;margin-bottom:18px;color:var(--text);display:flex;align-items:center;gap:8px;}
   .form-title::before{content:'';display:block;width:4px;height:18px;background:var(--green);border-radius:2px;}
@@ -44,22 +68,39 @@
   textarea{resize:none;height:80px;line-height:1.5;}
   select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;}
   input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,122,74,0.1);background:white;}
+  select:disabled,input:disabled{opacity:0.5;cursor:not-allowed;}
+
+  /* Divisi tag */
   .divisi-tag{display:none;margin-top:8px;padding:8px 12px;background:var(--green-light);border-radius:8px;font-size:13px;font-weight:600;color:var(--green);align-items:center;gap:6px;}
   .divisi-tag.show{display:flex;}
+
+  /* Status absensi hari ini */
+  .absen-status{display:none;margin-top:8px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;align-items:center;gap:8px;line-height:1.4;}
+  .absen-status.show{display:flex;}
+  .absen-status.checking{background:var(--bg);color:var(--gray);border:1px solid var(--border);}
+  .absen-status.belum-hadir{background:var(--orange-light);color:var(--orange);border:1px solid rgba(217,119,6,0.2);}
+  .absen-status.sudah-hadir{background:var(--green-light);color:var(--green);border:1px solid rgba(26,122,74,0.2);}
+  .absen-status.selesai{background:var(--blue-light);color:var(--blue);border:1px solid rgba(26,79,160,0.2);}
+  .absen-status.lembur{background:var(--purple-light);color:var(--purple);border:1px solid rgba(109,40,217,0.2);}
+
+  /* Foto */
   .foto-area{border:2px dashed var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);position:relative;}
   .foto-area:hover{border-color:var(--green);background:var(--green-light);}
+  .foto-area.disabled{opacity:0.5;cursor:not-allowed;pointer-events:none;}
   .foto-area input[type="file"]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:none;background:none;}
   .foto-placeholder{pointer-events:none;}
   .foto-placeholder .foto-icon{font-size:28px;margin-bottom:6px;}
   .foto-placeholder p{font-size:13px;color:var(--gray);font-weight:500;}
   .foto-placeholder small{font-size:11px;color:var(--gray);}
   .foto-preview{display:none;position:relative;border-radius:10px;overflow:hidden;}
-  .foto-preview img{width:100%;max-height:200px;object-fit:cover;border-radius:10px;display:block;}
+  .foto-preview img{width:100%;max-height:180px;object-fit:cover;border-radius:10px;display:block;}
   .foto-preview .foto-change{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:white;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;cursor:pointer;}
+
+  /* Keterangan pills */
   .ket-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .ket-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--gray);background:var(--bg);transition:all 0.15s;user-select:none;}
-  .ket-pill input{display:none;}
-  .ket-pill .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--border);transition:background 0.15s;}
+  .ket-pill.disabled{opacity:0.4;cursor:not-allowed;pointer-events:none;}
+  .ket-pill .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--border);}
   .ket-pill.selected{border-color:var(--green);background:var(--green-light);color:var(--green);}
   .ket-pill.selected .dot{background:var(--green);}
   .ket-pill.ket-sakit.selected{border-color:var(--red);background:var(--red-light);color:var(--red);}
@@ -70,35 +111,68 @@
   .ket-pill.ket-dinas.selected .dot{background:var(--blue);}
   .ket-pill.ket-lembur.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple);}
   .ket-pill.ket-lembur.selected .dot{background:var(--purple);}
+
+  /* Info lembur */
+  .lembur-info{display:none;margin-top:10px;padding:10px 14px;background:var(--purple-light);border-radius:10px;border:1px solid rgba(109,40,217,0.2);font-size:12px;color:var(--purple);font-weight:500;line-height:1.5;}
+  .lembur-info.show{display:block;}
+
+  /* Catatan wajib indicator */
+  .wajib-note{display:none;margin-top:6px;font-size:11px;color:var(--red);font-weight:600;}
+  .wajib-note.show{display:block;}
+
+  /* Action buttons */
   .action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
-  .btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px 12px;border-radius:12px;border:2px solid transparent;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
-  .btn-icon{font-size:26px;line-height:1;}
+  .btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:16px 12px;border-radius:12px;border:2px solid transparent;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;position:relative;}
+  .btn-icon{font-size:24px;line-height:1;}
+  .btn-sub{font-size:10px;font-weight:500;opacity:0.7;}
   .btn-hadir{background:var(--green-light);color:var(--green);border-color:rgba(26,122,74,0.2);}
-  .btn-hadir:hover,.btn-hadir:active{background:var(--green);color:white;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,122,74,0.3);}
+  .btn-hadir:not(:disabled):hover{background:var(--green);color:white;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,122,74,0.3);}
   .btn-pulang{background:var(--blue-light);color:var(--blue);border-color:rgba(26,79,160,0.2);}
-  .btn-pulang:hover,.btn-pulang:active{background:var(--blue);color:white;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,79,160,0.3);}
-  .status-card{display:none;width:100%;max-width:420px;border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;border:1.5px solid;animation:slideIn 0.35s ease;}
-  @keyframes slideIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
-  .status-card.success{background:var(--green-light);border-color:rgba(26,122,74,0.3);color:var(--green);display:block;}
-  .status-card.error{background:var(--red-light);border-color:rgba(192,57,43,0.3);color:var(--red);display:block;}
-  .status-card.warn{background:var(--gold-light);border-color:rgba(201,134,10,0.3);color:var(--gold);display:block;}
-  .status-icon{font-size:32px;margin-bottom:8px;}
-  .status-title{font-size:17px;font-weight:700;margin-bottom:4px;}
-  .status-body{font-size:13px;opacity:0.85;line-height:1.5;}
-  .info-card{width:100%;max-width:420px;background:var(--gold-light);border:1px solid rgba(201,134,10,0.2);border-radius:12px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;}
-  .info-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
-  .info-text{font-size:12px;color:var(--gold);font-weight:500;line-height:1.5;}
+  .btn-pulang:not(:disabled):hover{background:var(--blue);color:white;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,79,160,0.3);}
+  .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none !important;box-shadow:none !important;}
+  .btn-lock{position:absolute;top:6px;right:8px;font-size:11px;}
+
+  /* Loading btn */
+  .loading-btn{grid-column:1/-1;padding:14px;border-radius:12px;background:var(--green);color:white;border:none;font-family:inherit;font-size:15px;font-weight:700;display:none;align-items:center;justify-content:center;gap:10px;}
   .spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .loading-btn{grid-column:1/-1;padding:16px;border-radius:12px;background:var(--green);color:white;border:none;font-family:inherit;font-size:15px;font-weight:700;display:none;align-items:center;justify-content:center;gap:10px;}
+
+  /* Selesai card */
+  .selesai-card{display:none;width:100%;max-width:420px;background:var(--blue-light);border:1.5px solid rgba(26,79,160,0.2);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:16px;animation:slideIn 0.35s ease;}
+  .selesai-card.show{display:block;}
+  .selesai-icon{font-size:48px;margin-bottom:12px;}
+  .selesai-title{font-size:18px;font-weight:800;color:var(--blue);margin-bottom:6px;}
+  .selesai-body{font-size:13px;color:var(--blue);opacity:0.8;line-height:1.6;}
+  .selesai-detail{margin-top:14px;background:white;border-radius:10px;padding:12px;font-size:12px;color:var(--text);text-align:left;}
+  .selesai-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);}
+  .selesai-row:last-child{border-bottom:none;}
+  .selesai-row .sk{color:var(--gray);}
+  .selesai-row .sv{font-weight:700;}
+
+  /* Info card */
+  .info-card{width:100%;max-width:420px;background:var(--gold-light);border:1px solid rgba(201,134,10,0.2);border-radius:12px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;}
+  .info-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .info-text{font-size:12px;color:var(--gold);font-weight:500;line-height:1.5;}
+
+  /* Jam kunci info */
+  .jam-info{width:100%;max-width:420px;background:var(--orange-light);border:1px solid rgba(217,119,6,0.2);border-radius:12px;padding:12px 16px;display:none;gap:10px;align-items:center;margin-bottom:12px;}
+  .jam-info.show{display:flex;}
+  .jam-info-text{font-size:12px;color:var(--orange);font-weight:600;line-height:1.5;}
+
   .divider{width:100%;height:1px;background:var(--border);margin:4px 0 14px;}
 </style>
 </head>
 <body>
+
 <div class="header">
   <div class="logo-wrap">
     <div class="logo-icon">✈️</div>
     <div class="logo-text">Assyifa Tour & Travel<span>Sistem Absensi Digital</span></div>
+  </div>
+  <div class="nav-menu">
+    <a class="nav-btn active" href="index.html">📋 Absensi</a>
+    <a class="nav-btn" href="riwayat.html">📅 Riwayat</a>
+    <a class="nav-btn" href="belum-absen.html">👥 Rekap</a>
   </div>
 </div>
 
@@ -117,14 +191,31 @@
   </div>
 </div>
 
+<!-- Status notifikasi -->
 <div class="status-card" id="statusCard">
   <div class="status-icon" id="statusIcon"></div>
   <div class="status-title" id="statusTitle"></div>
   <div class="status-body" id="statusBody"></div>
 </div>
 
-<div class="form-card">
+<!-- Selesai card -->
+<div class="selesai-card" id="selesaiCard">
+  <div class="selesai-icon">✅</div>
+  <div class="selesai-title">Absensi Hari Ini Selesai!</div>
+  <div class="selesai-body">Kamu sudah melakukan absen masuk dan pulang hari ini.</div>
+  <div class="selesai-detail" id="selesaiDetail"></div>
+</div>
+
+<!-- Jam kunci info -->
+<div class="jam-info" id="jamInfo">
+  <span>🔒</span>
+  <div class="jam-info-text" id="jamInfoText"></div>
+</div>
+
+<!-- Form -->
+<div class="form-card" id="formCard">
   <div class="form-title">Data Pegawai</div>
+
   <div class="field">
     <label>Nama Pegawai</label>
     <select id="nama" onchange="pilihPegawai(this.value)">
@@ -140,11 +231,14 @@
       <option value="Dedi|Staff Operasional">Dedi</option>
     </select>
     <div class="divisi-tag" id="divisiTag">🏢 <span id="divisiLabel"></span></div>
+    <div class="absen-status" id="absenStatus"></div>
   </div>
+
   <div class="divider"></div>
+
   <div class="field">
     <label>📷 Foto Kehadiran</label>
-    <div class="foto-area">
+    <div class="foto-area" id="fotoArea">
       <input type="file" id="fotoInput" accept="image/*" capture="environment" onchange="previewFoto(this)"/>
       <div class="foto-placeholder" id="fotoPlaceholder">
         <div class="foto-icon">📸</div>
@@ -152,41 +246,69 @@
         <small>Wajib selfie atau foto di lokasi kantor</small>
       </div>
       <div class="foto-preview" id="fotoPreview">
-        <img id="fotoImg" src="" alt="Foto absensi"/>
+        <img id="fotoImg" src="" alt="Foto"/>
         <div class="foto-change" onclick="gantiiFoto(event)">Ganti Foto</div>
       </div>
     </div>
   </div>
+
   <div class="divider"></div>
-  <div class="field">
-    <label>Keterangan Kehadiran</label>
-    <div class="ket-grid">
-      <label class="ket-pill selected" id="pill-hadir" onclick="pilihKet('Hadir')"><span class="dot"></span> ✅ Hadir</label>
-      <label class="ket-pill ket-sakit" id="pill-sakit" onclick="pilihKet('Sakit')"><span class="dot"></span> 🤒 Sakit</label>
-      <label class="ket-pill ket-izin" id="pill-izin" onclick="pilihKet('Izin')"><span class="dot"></span> 📋 Izin</label>
-      <label class="ket-pill ket-dinas" id="pill-dinas" onclick="pilihKet('Perjalanan Dinas')"><span class="dot"></span> 🧳 Perjalanan Dinas</label>
-      <label class="ket-pill ket-lembur" id="pill-lembur" onclick="pilihKet('Lembur')" style="grid-column:1/-1"><span class="dot"></span> 🌙 Lembur</label>
+
+  <!-- Keterangan MASUK -->
+  <div class="field" id="ketMasukSection">
+    <label>Keterangan Masuk</label>
+    <div class="ket-grid" id="ketMasukGrid">
+      <label class="ket-pill selected" id="pill-hadir" onclick="pilihKet('masuk','Hadir')"><span class="dot"></span> ✅ Hadir</label>
+      <label class="ket-pill ket-lembur" id="pill-lembur-masuk" onclick="pilihKet('masuk','Lembur')"><span class="dot"></span> 🌙 Lembur</label>
+      <label class="ket-pill ket-dinas" id="pill-dinas-masuk" onclick="pilihKet('masuk','Perjalanan Dinas')" style="grid-column:1/-1"><span class="dot"></span> 🧳 Perjalanan Dinas</label>
     </div>
-    <input type="hidden" id="keterangan" value="Hadir"/>
+    <div class="lembur-info" id="lemburInfoMasuk">🌙 Kamu akan absen masuk sebagai <b>Lembur</b>. Absen pulang otomatis tercatat sebagai Pulang Lembur.</div>
   </div>
+
+  <!-- Keterangan PULANG -->
+  <div class="field" id="ketPulangSection" style="display:none">
+    <label>Keterangan Pulang</label>
+    <div class="ket-grid" id="ketPulangGrid">
+      <label class="ket-pill selected" id="pill-pulang-normal" onclick="pilihKet('pulang','Pulang Normal')"><span class="dot"></span> 🔵 Normal</label>
+      <label class="ket-pill ket-lembur" id="pill-pulang-lembur" onclick="pilihKet('pulang','Pulang Lembur')"><span class="dot"></span> 🌙 Lembur</label>
+      <label class="ket-pill ket-izin" id="pill-pulang-cepat" onclick="pilihKet('pulang','Pulang Cepat')" style="grid-column:1/-1"><span class="dot"></span> ⏩ Pulang Cepat (Izin)</label>
+    </div>
+    <div class="lembur-info" id="lemburInfoPulang" style="display:none">🌙 Kamu akan absen pulang <b>Lembur</b>. Sistem akan mencatat durasi lembur otomatis dari jam 16.00.</div>
+    <div class="wajib-note" id="catatanWajib">⚠️ Catatan wajib diisi untuk pulang cepat!</div>
+  </div>
+
   <div class="field">
-    <label>📝 Catatan Tambahan (opsional)</label>
-    <textarea id="notes" placeholder="Contoh: izin karena urusan keluarga, lembur sampai jam 20.00, dll..."></textarea>
+    <label>📝 Catatan Tambahan <span id="catatanLabel" style="font-weight:400;text-transform:none;letter-spacing:0">(opsional)</span></label>
+    <textarea id="notes" placeholder="Tambahkan catatan jika perlu..."></textarea>
   </div>
+
+  <input type="hidden" id="keterangan" value="Hadir"/>
+  <input type="hidden" id="modeAbsen" value="Hadir"/>
+
   <div class="action-buttons" id="actionButtons">
-    <button class="btn btn-hadir" onclick="submitAbsensi('Hadir')"><span class="btn-icon">🟢</span>Hadir</button>
-    <button class="btn btn-pulang" onclick="submitAbsensi('Pulang')"><span class="btn-icon">🔵</span>Pulang</button>
+    <button class="btn btn-hadir" id="btnHadir" onclick="submitAbsensi('Hadir')">
+      <span class="btn-lock" id="lockHadir" style="display:none">🔒</span>
+      <span class="btn-icon">🟢</span>
+      <span>Absen Masuk</span>
+      <span class="btn-sub" id="subHadir">Tap untuk hadir</span>
+    </button>
+    <button class="btn btn-pulang" id="btnPulang" onclick="submitAbsensi('Pulang')">
+      <span class="btn-lock" id="lockPulang" style="display:none">🔒</span>
+      <span class="btn-icon">🔵</span>
+      <span>Absen Pulang</span>
+      <span class="btn-sub" id="subPulang">Tersedia jam 16.00</span>
+    </button>
     <button class="loading-btn" id="loadingBtn"><span class="spinner"></span> Menyimpan...</button>
   </div>
 </div>
 
 <div class="info-card">
   <span class="info-icon">💡</span>
-  <div class="info-text">Jam masuk: <b>08.00 WIB</b> &nbsp;|&nbsp; Jam pulang: <b>16.00 WIB</b><br>Data absensi tersimpan otomatis ke Google Sheets.</div>
+  <div class="info-text">Jam masuk: <b>08.00 WIB</b> &nbsp;|&nbsp; Jam pulang: <b>16.00 WIB</b><br>Absen pulang tersedia mulai jam 16.00 atau dengan izin khusus.</div>
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcW9U6pLUi0dUNRZQb1Y8I4jLx4RFBlezR4Ny5oHCliL0EjlkslQL13IGio7u18epLJw/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyS0QQ-aFQoBK4Hbu8pbq6npQSC7J3WWHUoOqdCJN7bT9v9dVUTYo4PLWmjZsMXFBEkpg/exec";
 
   const PEGAWAI = {
     "Teguh Muhammad Firdaus":"Direktur Utama",
@@ -201,22 +323,248 @@
   };
 
   let fotoBase64="", selectedNama="", selectedDivisi="";
+  let statusHariIni = null; // {hadir: bool, pulang: bool, keteranganMasuk: string, jamMasuk: string}
 
+  // Clock
   function updateClock(){
     const now=new Date();
     document.getElementById('jam').textContent=now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'Asia/Jakarta'});
     document.getElementById('tanggal').textContent=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Jakarta'});
+    updateTombolState();
   }
   updateClock(); setInterval(updateClock,1000);
 
-  function pilihPegawai(val){
-    if(!val){selectedNama='';selectedDivisi='';document.getElementById('divisiTag').classList.remove('show');return;}
+  // JSONP
+  function jsonpFetch(url){
+    return new Promise((resolve,reject)=>{
+      const cbName='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+      const script=document.createElement('script');
+      const timeout=setTimeout(()=>{delete window[cbName];script.remove();reject(new Error('Timeout'));},15000);
+      window[cbName]=data=>{clearTimeout(timeout);delete window[cbName];script.remove();resolve(data);};
+      script.src=url+(url.includes('?')?'&':'?')+'callback='+cbName;
+      script.onerror=()=>{clearTimeout(timeout);reject(new Error('Error'));};
+      document.head.appendChild(script);
+    });
+  }
+
+  // Jam WIB sekarang dalam format HHMM (integer)
+  function jamSekarang(){
+    const now=new Date();
+    const wib=new Date(now.getTime());
+    const h=parseInt(now.toLocaleTimeString('id-ID',{hour:'2-digit',timeZone:'Asia/Jakarta',hour12:false}));
+    const m=parseInt(now.toLocaleTimeString('id-ID',{minute:'2-digit',timeZone:'Asia/Jakarta'}));
+    return h*100+m;
+  }
+
+  // Tanggal hari ini format dd/MM/yyyy
+  function tanggalHariIni(){
+    const now=new Date();
+    return now.toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Asia/Jakarta'}).replace(/\//g,'/');
+  }
+
+  // Pilih pegawai
+  async function pilihPegawai(val){
+    if(!val){
+      selectedNama='';selectedDivisi='';
+      document.getElementById('divisiTag').classList.remove('show');
+      document.getElementById('absenStatus').className='absen-status';
+      statusHariIni=null;
+      resetUI();
+      return;
+    }
     const [nama,divisi]=val.split('|');
     selectedNama=nama; selectedDivisi=divisi;
     document.getElementById('divisiLabel').textContent=divisi;
     document.getElementById('divisiTag').classList.add('show');
+
+    // Cek status absensi hari ini
+    const st=document.getElementById('absenStatus');
+    st.className='absen-status checking show';
+    st.innerHTML='⏳ Mengecek status absensi...';
+
+    try{
+      const json=await jsonpFetch(SCRIPT_URL+'?action=cekStatus&nama='+encodeURIComponent(nama)+'&t='+Date.now());
+      statusHariIni=json;
+      updateUIBerdasarkanStatus();
+    } catch(e){
+      st.className='absen-status belum-hadir show';
+      st.innerHTML='⚠️ Gagal cek status, lanjutkan manual';
+      statusHariIni={hadir:false,pulang:false,keteranganMasuk:'',jamMasuk:''};
+      updateTombolState();
+    }
   }
 
+  function updateUIBerdasarkanStatus(){
+    if(!statusHariIni) return;
+    const st=document.getElementById('absenStatus');
+    const {hadir,pulang,keteranganMasuk,jamMasuk,jamPulang}=statusHariIni;
+
+    if(pulang){
+      // Sudah hadir + pulang → selesai
+      st.className='absen-status selesai show';
+      st.innerHTML='✅ Absensi hari ini sudah selesai';
+      tampilkanSelesai(jamMasuk, jamPulang, keteranganMasuk);
+      document.getElementById('formCard').style.display='none';
+      document.getElementById('jamInfo').classList.remove('show');
+    } else if(hadir){
+      // Sudah hadir, belum pulang
+      const kLembur = keteranganMasuk === 'Lembur';
+      if(kLembur){
+        st.className='absen-status lembur show';
+        st.innerHTML='🌙 Masuk Lembur jam '+jamMasuk+' — Silakan absen pulang lembur';
+      } else {
+        st.className='absen-status sudah-hadir show';
+        st.innerHTML='✅ Sudah masuk jam '+jamMasuk+' — Silakan absen pulang';
+      }
+      // Tampilkan keterangan pulang
+      document.getElementById('ketMasukSection').style.display='none';
+      document.getElementById('ketPulangSection').style.display='block';
+      document.getElementById('modeAbsen').value='Pulang';
+
+      // Kalau masuk lembur, set default pulang lembur
+      if(kLembur){
+        pilihKet('pulang','Pulang Lembur');
+        document.getElementById('pill-pulang-normal').classList.add('disabled');
+        document.getElementById('pill-pulang-cepat').classList.add('disabled');
+      } else {
+        pilihKet('pulang','Pulang Normal');
+      }
+      updateTombolState();
+    } else {
+      // Belum hadir
+      st.className='absen-status belum-hadir show';
+      st.innerHTML='⏰ Belum absen masuk hari ini';
+      document.getElementById('ketMasukSection').style.display='block';
+      document.getElementById('ketPulangSection').style.display='none';
+      document.getElementById('modeAbsen').value='Hadir';
+      pilihKet('masuk','Hadir');
+      updateTombolState();
+    }
+  }
+
+  function updateTombolState(){
+    const btnHadir=document.getElementById('btnHadir');
+    const btnPulang=document.getElementById('btnPulang');
+    const subHadir=document.getElementById('subHadir');
+    const subPulang=document.getElementById('subPulang');
+    const lockHadir=document.getElementById('lockHadir');
+    const lockPulang=document.getElementById('lockPulang');
+    const jamInfo=document.getElementById('jamInfo');
+    const jamInfoText=document.getElementById('jamInfoText');
+    const jam=jamSekarang();
+    const mode=document.getElementById('modeAbsen').value;
+    const ket=document.getElementById('keterangan').value;
+
+    if(!statusHariIni){
+      // Belum pilih nama
+      btnHadir.disabled=true; btnPulang.disabled=true;
+      lockHadir.style.display='none'; lockPulang.style.display='none';
+      jamInfo.classList.remove('show');
+      return;
+    }
+
+    const {hadir,pulang,keteranganMasuk}=statusHariIni;
+
+    if(pulang){
+      btnHadir.disabled=true; btnPulang.disabled=true;
+      lockHadir.style.display='block'; lockPulang.style.display='block';
+      jamInfo.classList.remove('show');
+      return;
+    }
+
+    if(!hadir){
+      // Mode masuk
+      btnHadir.disabled=false;
+      btnHadir.querySelector('span:nth-child(3)').textContent='Absen Masuk';
+      subHadir.textContent='Tap untuk hadir';
+      lockHadir.style.display='none';
+      // Pulang dikunci
+      btnPulang.disabled=true;
+      lockPulang.style.display='block';
+      subPulang.textContent='Hadir dulu';
+      jamInfo.classList.remove('show');
+    } else {
+      // Mode pulang
+      btnHadir.disabled=true;
+      lockHadir.style.display='block';
+      subHadir.textContent='Sudah absen';
+      btnHadir.querySelector('span:nth-child(3)').textContent='Absen Masuk';
+
+      const isLemburMasuk = keteranganMasuk === 'Lembur';
+      const isPulangCepat = ket === 'Pulang Cepat';
+
+      if(isLemburMasuk){
+        // Lembur → tombol pulang selalu buka
+        btnPulang.disabled=false;
+        lockPulang.style.display='none';
+        subPulang.textContent='Pulang Lembur';
+        jamInfo.classList.remove('show');
+      } else if(isPulangCepat){
+        // Pulang cepat → selalu buka tapi catatan wajib
+        btnPulang.disabled=false;
+        lockPulang.style.display='none';
+        subPulang.textContent='Pulang Cepat';
+        jamInfo.classList.remove('show');
+      } else if(jam >= 1600){
+        // Jam sudah 16.00 → buka
+        btnPulang.disabled=false;
+        lockPulang.style.display='none';
+        subPulang.textContent='Silakan absen pulang';
+        jamInfo.classList.remove('show');
+      } else {
+        // Jam belum 16.00 → kunci
+        btnPulang.disabled=true;
+        lockPulang.style.display='block';
+        const sisaMenit=1600-jam;
+        const sisamM=Math.floor(sisaMenit/100)*60+(sisaMenit%100);
+        subPulang.textContent='Buka jam 16.00';
+        jamInfo.classList.add('show');
+        jamInfoText.textContent='🔒 Absen pulang tersedia mulai jam 16.00. Sisa waktu ±'+sisamM+' menit. Pilih "Pulang Cepat" jika ada izin khusus.';
+      }
+    }
+  }
+
+  function tampilkanSelesai(jamMasuk, jamPulang, keteranganMasuk){
+    const card=document.getElementById('selesaiCard');
+    const detail=document.getElementById('selesaiDetail');
+    card.classList.add('show');
+    detail.innerHTML=`
+      <div class="selesai-row"><span class="sk">Masuk</span><span class="sv">${jamMasuk||'-'}</span></div>
+      <div class="selesai-row"><span class="sk">Pulang</span><span class="sv">${jamPulang||'-'}</span></div>
+      <div class="selesai-row"><span class="sk">Keterangan</span><span class="sv">${keteranganMasuk||'Hadir'}</span></div>
+    `;
+  }
+
+  // Pilih keterangan
+  function pilihKet(mode, ket){
+    document.getElementById('keterangan').value=ket;
+
+    if(mode==='masuk'){
+      document.querySelectorAll('#ketMasukGrid .ket-pill').forEach(p=>p.classList.remove('selected'));
+      const map={'Hadir':'hadir','Lembur':'lembur-masuk','Perjalanan Dinas':'dinas-masuk'};
+      document.getElementById('pill-'+map[ket])?.classList.add('selected');
+      const lemburInfo=document.getElementById('lemburInfoMasuk');
+      lemburInfo.classList.toggle('show', ket==='Lembur');
+    } else {
+      document.querySelectorAll('#ketPulangGrid .ket-pill').forEach(p=>p.classList.remove('selected'));
+      const map={'Pulang Normal':'pulang-normal','Pulang Lembur':'pulang-lembur','Pulang Cepat':'pulang-cepat'};
+      document.getElementById('pill-'+map[ket])?.classList.add('selected');
+      const lemburInfo=document.getElementById('lemburInfoPulang');
+      lemburInfo.style.display = ket==='Pulang Lembur'?'block':'none';
+      const catatanWajib=document.getElementById('catatanWajib');
+      const catatanLabel=document.getElementById('catatanLabel');
+      if(ket==='Pulang Cepat'){
+        catatanWajib.classList.add('show');
+        catatanLabel.textContent='(wajib diisi untuk pulang cepat)';
+      } else {
+        catatanWajib.classList.remove('show');
+        catatanLabel.textContent='(opsional)';
+      }
+    }
+    updateTombolState();
+  }
+
+  // Preview foto
   function previewFoto(input){
     if(!input.files||!input.files[0])return;
     const reader=new FileReader();
@@ -228,66 +576,27 @@
     };
     reader.readAsDataURL(input.files[0]);
   }
-
   function gantiiFoto(e){e.stopPropagation();document.getElementById('fotoInput').click();}
 
-  function pilihKet(ket){
-    document.getElementById('keterangan').value=ket;
-    document.querySelectorAll('.ket-pill').forEach(p=>p.classList.remove('selected'));
-    const map={'Hadir':'hadir','Sakit':'sakit','Izin':'izin','Perjalanan Dinas':'dinas','Lembur':'lembur'};
-    document.getElementById('pill-'+map[ket])?.classList.add('selected');
-  }
-  pilihKet('Hadir');
-
-
-  function parseTanggal(raw) {
-    if (!raw) return '';
-    const s = String(raw);
-    if (s.match(/^\d{2}\/\d{2}\/\d{4}$/)) return s;
-    if (s.includes('T') || s.match(/^\d{4}-/)) {
-      const d = new Date(s);
-      if (!isNaN(d)) {
-        const wib = new Date(d.getTime() + 7*60*60*1000);
-        const dd = String(wib.getUTCDate()).padStart(2,'0');
-        const mm = String(wib.getUTCMonth()+1).padStart(2,'0');
-        return dd+'/'+mm+'/'+wib.getUTCFullYear();
-      }
-    }
-    return s;
-  }
-
-  // JSONP helper — solusi CORS
-  function jsonpFetch(url){
-    return new Promise((resolve,reject)=>{
-      const cbName='cb_'+Date.now();
-      const script=document.createElement('script');
-      const timeout=setTimeout(()=>{
-        delete window[cbName]; script.remove();
-        reject(new Error('Timeout'));
-      },15000);
-      window[cbName]=data=>{
-        clearTimeout(timeout);
-        delete window[cbName]; script.remove();
-        resolve(data);
-      };
-      script.src=url+(url.includes('?')?'&':'?')+'callback='+cbName;
-      script.onerror=()=>{clearTimeout(timeout);reject(new Error('Script error'));};
-      document.head.appendChild(script);
-    });
-  }
-
+  // Submit
   async function submitAbsensi(tipe){
-    if(!selectedNama){showStatus('error','⚠️','Nama belum dipilih','Silakan pilih nama kamu dari dropdown.');return;}
-    if(!fotoBase64){showStatus('error','📸','Foto belum diambil','Silakan ambil foto selfie kehadiran dulu.');return;}
+    if(!selectedNama){showStatus('error','⚠️','Nama belum dipilih','Pilih nama dari dropdown.');return;}
+    if(!fotoBase64){showStatus('error','📸','Foto belum diambil','Ambil foto selfie dulu.');return;}
+
+    const ket=document.getElementById('keterangan').value;
+    const notes=document.getElementById('notes').value.trim();
+
+    // Validasi catatan wajib untuk pulang cepat
+    if(ket==='Pulang Cepat' && !notes){
+      showStatus('error','⚠️','Catatan Wajib Diisi','Tuliskan alasan pulang cepat di kolom catatan.');
+      return;
+    }
 
     document.getElementById('actionButtons').style.display='none';
     document.getElementById('loadingBtn').style.display='flex';
     hideStatus();
 
     const now=new Date();
-    const ket=document.getElementById('keterangan').value||'Hadir';
-    const notes=document.getElementById('notes').value.trim();
-
     const params=new URLSearchParams({
       nama:selectedNama, divisi:selectedDivisi,
       tipe, keterangan:ket, notes,
@@ -297,31 +606,57 @@
 
     try{
       const data=await jsonpFetch(SCRIPT_URL+'?'+params.toString());
-
-      if(data.status==='duplikat'){
-        showStatus('warn','⚠️','Sudah Absen Hari Ini',data.message);
+      if(data.status==='duplikat'||data.status==='error'){
+        showStatus(data.status==='duplikat'?'warn':'error','⚠️',
+          data.status==='duplikat'?'Sudah Absen':'Tidak Bisa Absen',
+          data.message);
       } else if(data.status==='ok'){
-        const emoji=tipe==='Hadir'?'✅':'👋';
-        const judul=tipe==='Hadir'?'Absensi Masuk Berhasil!':'Absensi Pulang Berhasil!';
-        showStatus('success',emoji,judul,`Hai, ${selectedNama}!\nAbsensi ${tipe.toLowerCase()} (${ket}) pada ${now.toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'})} telah tercatat.`);
-        // Reset
-        document.getElementById('nama').value='';
-        document.getElementById('notes').value='';
-        document.getElementById('divisiTag').classList.remove('show');
-        fotoBase64=''; selectedNama=''; selectedDivisi='';
+        // Update status lokal
+        if(tipe==='Hadir'){
+          statusHariIni={hadir:true,pulang:false,keteranganMasuk:ket,jamMasuk:data.jam,jamPulang:''};
+        } else {
+          statusHariIni.pulang=true;
+          statusHariIni.jamPulang=data.jam;
+        }
+
+        if(tipe==='Pulang'){
+          // Tampilkan selesai
+          document.getElementById('formCard').style.display='none';
+          document.getElementById('jamInfo').classList.remove('show');
+          tampilkanSelesai(statusHariIni.jamMasuk, data.jam, statusHariIni.keteranganMasuk);
+          showStatus('success','👋','Absensi Pulang Berhasil!',
+            'Hai, '+selectedNama+'! Absensi pulang ('+ket+') jam '+data.jam+' telah tercatat.');
+        } else {
+          showStatus('success','✅','Absensi Masuk Berhasil!',
+            'Hai, '+selectedNama+'! Absensi masuk ('+ket+') jam '+data.jam+' telah tercatat.');
+          updateUIBerdasarkanStatus();
+        }
+
+        // Reset foto & catatan
+        fotoBase64='';
         document.getElementById('fotoImg').src='';
         document.getElementById('fotoPlaceholder').style.display='block';
         document.getElementById('fotoPreview').style.display='none';
-        pilihKet('Hadir');
-      } else {
-        showStatus('error','❌','Gagal',data.message||'Terjadi kesalahan.');
+        document.getElementById('notes').value='';
       }
     } catch(e){
-      showStatus('error','❌','Gagal Mengirim','Periksa koneksi internet kamu, lalu coba lagi.');
+      showStatus('error','❌','Gagal Mengirim','Periksa koneksi internet, lalu coba lagi.');
     } finally{
       document.getElementById('loadingBtn').style.display='none';
       document.getElementById('actionButtons').style.display='grid';
     }
+  }
+
+  function resetUI(){
+    statusHariIni=null;
+    document.getElementById('formCard').style.display='block';
+    document.getElementById('selesaiCard').classList.remove('show');
+    document.getElementById('jamInfo').classList.remove('show');
+    document.getElementById('ketMasukSection').style.display='block';
+    document.getElementById('ketPulangSection').style.display='none';
+    document.getElementById('modeAbsen').value='Hadir';
+    pilihKet('masuk','Hadir');
+    updateTombolState();
   }
 
   function showStatus(type,icon,title,body){
