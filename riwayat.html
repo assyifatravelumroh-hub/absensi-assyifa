@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat Absensi — Assyifa Tour & Travel</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#1a7a4a;--green-light:#e8f5ee;--green-mid:#2d9e62;--blue:#1a4fa0;--blue-light:#e8f0fb;--gold:#c9860a;--gold-light:#fdf3e0;--red:#c0392b;--red-light:#fdecea;--purple:#6d28d9;--purple-light:#ede9fe;--orange:#d97706;--orange-light:#fef3c7;--gray:#6b7280;--border:#e5e7eb;--bg:#f7f8fa;--white:#fff;--text:#111827;--shadow:0 4px 24px rgba(0,0,0,0.07);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px;}
+
+  .topbar{background:linear-gradient(135deg,#0f4c2a,#1a7a4a);padding:16px 20px;display:flex;align-items:center;gap:12px;color:white;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
+  .topbar-icon{font-size:22px;}
+  .topbar-title{font-size:15px;font-weight:800;line-height:1.2;}
+  .topbar-title small{font-size:11px;font-weight:500;opacity:0.7;display:block;}
+
+  .nav-bar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;}
+  .nav-btn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+  .nav-btn:hover{border-color:var(--green);color:var(--green);}
+  .nav-btn.active{background:var(--green);color:white;border-color:var(--green);}
+
+  .container{max-width:700px;margin:0 auto;padding:20px;}
+
+  /* Filter */
+  .filter-card{background:var(--white);border-radius:14px;padding:18px;border:1px solid var(--border);margin-bottom:16px;box-shadow:var(--shadow);}
+  .filter-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .filter-title::before{content:'';display:block;width:4px;height:16px;background:var(--green);border-radius:2px;}
+  .filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .filter-field label{display:block;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:5px;}
+  .filter-field select,.filter-field input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;outline:none;-webkit-appearance:none;appearance:none;background:var(--bg);color:var(--text);}
+  .filter-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+  .filter-field select:focus,.filter-field input:focus{border-color:var(--green);}
+  .btn-cari{width:100%;margin-top:12px;padding:12px;background:var(--green);color:white;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+  .btn-cari:hover{opacity:0.88;}
+
+  /* Summary */
+  .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .sum-card{background:var(--white);border-radius:12px;padding:14px 12px;border:1px solid var(--border);text-align:center;}
+  .sum-num{font-size:24px;font-weight:800;line-height:1;margin-bottom:3px;}
+  .sum-label{font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;}
+  .sum-card.c-green .sum-num{color:var(--green);}
+  .sum-card.c-red .sum-num{color:var(--red);}
+  .sum-card.c-gold .sum-num{color:var(--gold);}
+  .sum-card.c-blue .sum-num{color:var(--blue);}
+  .sum-card.c-purple .sum-num{color:var(--purple);}
+  .sum-card.c-orange .sum-num{color:var(--orange);}
+
+  /* List riwayat */
+  .riwayat-list{display:flex;flex-direction:column;gap:10px;}
+  .riwayat-item{background:var(--white);border-radius:12px;padding:14px 16px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+  .ri-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .ri-tanggal{font-size:13px;font-weight:700;color:var(--text);}
+  .ri-hari{font-size:11px;color:var(--gray);margin-top:1px;}
+  .ri-badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .ri-body{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+  .ri-row{display:flex;flex-direction:column;}
+  .ri-key{font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+  .ri-val{font-size:13px;font-weight:600;color:var(--text);}
+  .ri-catatan{grid-column:1/-1;margin-top:4px;}
+  .badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-hadir{background:var(--green-light);color:var(--green);}
+  .badge-pulang{background:var(--blue-light);color:var(--blue);}
+  .badge-sakit{background:var(--red-light);color:var(--red);}
+  .badge-izin{background:var(--gold-light);color:var(--gold);}
+  .badge-dinas{background:var(--blue-light);color:var(--blue);}
+  .badge-lembur{background:var(--purple-light);color:var(--purple);}
+  .badge-terlambat{background:var(--orange-light);color:var(--orange);}
+  .badge-tepat{background:var(--green-light);color:var(--green);}
+  .badge-cepat{background:var(--gold-light);color:var(--gold);}
+
+  /* Loading & empty */
+  .loading-state,.empty-state{text-align:center;padding:48px 20px;color:var(--gray);}
+  .spinner-lg{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:10px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .empty-icon{font-size:40px;margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-icon">📅</div>
+  <div class="topbar-title">Riwayat Absensi<small>Assyifa Tour & Travel</small></div>
+</div>
+
+<div class="nav-bar">
+  <a class="nav-btn" href="index.html">📋 Absensi</a>
+  <a class="nav-btn active" href="riwayat.html">📅 Riwayat</a>
+  <a class="nav-btn" href="belum-absen.html">👥 Rekap</a>
+</div>
+
+<div class="container">
+
+  <!-- Filter -->
+  <div class="filter-card">
+    <div class="filter-title">Filter Riwayat</div>
+    <div class="filter-grid">
+      <div class="filter-field">
+        <label>Nama Pegawai</label>
+        <select id="filterNama">
+          <option value="">Semua Pegawai</option>
+          <option>Teguh Muhammad Firdaus</option>
+          <option>Muhamad Arif Basuni</option>
+          <option>Cepi Sutanto</option>
+          <option>Azhar Dzaky Muhamad HM</option>
+          <option>Fithri Amalia Rahma</option>
+          <option>Nabila Azahra</option>
+          <option>Andy Rohaendy</option>
+          <option>Zenal Ali Mansur</option>
+          <option>Dedi</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Bulan</label>
+        <select id="filterBulan">
+          <option value="">Semua Bulan</option>
+          <option value="01">Januari</option>
+          <option value="02">Februari</option>
+          <option value="03">Maret</option>
+          <option value="04">April</option>
+          <option value="05">Mei</option>
+          <option value="06">Juni</option>
+          <option value="07">Juli</option>
+          <option value="08">Agustus</option>
+          <option value="09">September</option>
+          <option value="10">Oktober</option>
+          <option value="11">November</option>
+          <option value="12">Desember</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Tahun</label>
+        <select id="filterTahun">
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2025">2025</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Keterangan</label>
+        <select id="filterKet">
+          <option value="">Semua</option>
+          <option>Hadir</option>
+          <option>Lembur</option>
+          <option>Perjalanan Dinas</option>
+          <option>Sakit</option>
+          <option>Izin</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-cari" onclick="loadRiwayat()">🔍 Tampilkan Riwayat</button>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary" id="summarySection" style="display:none">
+    <div class="sum-card c-green"><div class="sum-num" id="s-hadir">0</div><div class="sum-label">Hadir</div></div>
+    <div class="sum-card c-orange"><div class="sum-num" id="s-terlambat">0</div><div class="sum-label">Terlambat</div></div>
+    <div class="sum-card c-purple"><div class="sum-num" id="s-lembur">0</div><div class="sum-label">Lembur</div></div>
+    <div class="sum-card c-red"><div class="sum-num" id="s-sakit">0</div><div class="sum-label">Sakit</div></div>
+    <div class="sum-card c-gold"><div class="sum-num" id="s-izin">0</div><div class="sum-label">Izin</div></div>
+    <div class="sum-card c-blue"><div class="sum-num" id="s-dinas">0</div><div class="sum-label">Dinas</div></div>
+  </div>
+
+  <!-- List -->
+  <div id="riwayatContainer">
+    <div class="empty-state">
+      <div class="empty-icon">📅</div>
+      <p>Pilih filter lalu klik <b>Tampilkan Riwayat</b></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SCRIPT_URL="https://script.google.com/macros/s/AKfycbyS0QQ-aFQoBK4Hbu8pbq6npQSC7J3WWHUoOqdCJN7bT9v9dVUTYo4PLWmjZsMXFBEkpg/exec";
+
+  // Set bulan & tahun default ke sekarang
+  window.addEventListener('load',()=>{
+    const now=new Date();
+    const bln=String(now.getMonth()+1).padStart(2,'0');
+    document.getElementById('filterBulan').value=bln;
+    document.getElementById('filterTahun').value=String(now.getFullYear());
+  });
+
+  function jsonpFetch(url){
+    return new Promise((resolve,reject)=>{
+      const cbName='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+      const script=document.createElement('script');
+      const timeout=setTimeout(()=>{delete window[cbName];script.remove();reject(new Error('Timeout'));},15000);
+      window[cbName]=data=>{clearTimeout(timeout);delete window[cbName];script.remove();resolve(data);};
+      script.src=url+(url.includes('?')?'&':'?')+'callback='+cbName;
+      script.onerror=()=>{clearTimeout(timeout);reject(new Error('Error'));};
+      document.head.appendChild(script);
+    });
+  }
+
+  async function loadRiwayat(){
+    const nama=document.getElementById('filterNama').value;
+    const bulan=document.getElementById('filterBulan').value;
+    const tahun=document.getElementById('filterTahun').value;
+    const ket=document.getElementById('filterKet').value;
+
+    const container=document.getElementById('riwayatContainer');
+    container.innerHTML='<div class="loading-state"><div class="spinner-lg"></div><br>Memuat riwayat...</div>';
+    document.getElementById('summarySection').style.display='none';
+
+    try{
+      const json=await jsonpFetch(SCRIPT_URL+'?action=getData&t='+Date.now());
+      let data=json.data||[];
+
+      // Filter
+      data=data.filter(row=>{
+        const tgl=String(row[0]); // dd/MM/yyyy
+        const parts=tgl.split('/');
+        if(bulan && parts[1]!==bulan) return false;
+        if(tahun && parts[2]!==tahun) return false;
+        if(nama && row[3]!==nama) return false;
+        if(ket && row[6]!==ket) return false;
+        return true;
+      });
+
+      // Kelompokkan per tanggal+nama
+      const grouped={};
+      data.forEach(row=>{
+        const key=row[0]+'|'+row[3]; // tanggal|nama
+        if(!grouped[key]) grouped[key]={tanggal:row[0],hari:row[1],nama:row[3],divisi:row[4],masuk:null,pulang:null};
+        if(row[5]==='Hadir') grouped[key].masuk=row;
+        if(row[5]==='Pulang') grouped[key].pulang=row;
+      });
+
+      const items=Object.values(grouped).sort((a,b)=>b.tanggal.localeCompare(a.tanggal));
+
+      // Summary
+      const masukRows=data.filter(r=>r[5]==='Hadir');
+      document.getElementById('s-hadir').textContent=masukRows.filter(r=>r[6]==='Hadir').length;
+      document.getElementById('s-terlambat').textContent=data.filter(r=>String(r[7]).includes('Terlambat')).length;
+      document.getElementById('s-lembur').textContent=masukRows.filter(r=>r[6]==='Lembur').length;
+      document.getElementById('s-sakit').textContent=masukRows.filter(r=>r[6]==='Sakit').length;
+      document.getElementById('s-izin').textContent=masukRows.filter(r=>r[6]==='Izin').length;
+      document.getElementById('s-dinas').textContent=masukRows.filter(r=>r[6]==='Perjalanan Dinas').length;
+      document.getElementById('summarySection').style.display='grid';
+
+      if(items.length===0){
+        container.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data untuk filter yang dipilih.</p></div>';
+        return;
+      }
+
+      // Render
+      const ketBadge=(k)=>{
+        const map={
+          'Hadir':'badge-hadir','Lembur':'badge-lembur',
+          'Perjalanan Dinas':'badge-dinas','Sakit':'badge-sakit',
+          'Izin':'badge-izin','Pulang Normal':'badge-pulang',
+          'Pulang Lembur':'badge-lembur','Pulang Cepat':'badge-cepat'
+        };
+        return `<span class="badge ${map[k]||'badge-hadir'}">${k}</span>`;
+      };
+      const statusBadge=(s)=>{
+        if(!s) return '';
+        if(String(s).includes('Terlambat')) return `<span class="badge badge-terlambat">⏰ ${s}</span>`;
+        if(String(s).includes('Tepat')) return `<span class="badge badge-tepat">✅ ${s}</span>`;
+        return `<span class="badge badge-hadir">${s}</span>`;
+      };
+
+      container.innerHTML='<div class="riwayat-list">'+items.map(item=>{
+        const m=item.masuk;
+        const p=item.pulang;
+        const catatan=m?m[8]:'-';
+        return `<div class="riwayat-item">
+          <div class="ri-header">
+            <div>
+              <div class="ri-tanggal">${item.tanggal} &nbsp;<span style="font-weight:500;color:var(--gray)">${item.hari}</span></div>
+              <div class="ri-hari">${item.nama} — ${item.divisi}</div>
+            </div>
+            <div class="ri-badges">
+              ${m?ketBadge(m[6]):'<span class="badge badge-terlambat">Tidak Hadir</span>'}
+              ${m?statusBadge(m[7]):''}
+            </div>
+          </div>
+          <div class="ri-body">
+            <div class="ri-row"><div class="ri-key">Jam Masuk</div><div class="ri-val">${m?m[2]:'-'}</div></div>
+            <div class="ri-row"><div class="ri-key">Jam Pulang</div><div class="ri-val">${p?p[2]:'-'}</div></div>
+            ${p?`<div class="ri-row"><div class="ri-key">Ket. Pulang</div><div class="ri-val">${ketBadge(p[6])}</div></div>`:''}
+            ${p&&p[7]?`<div class="ri-row"><div class="ri-key">Durasi Lembur</div><div class="ri-val" style="color:var(--purple)">${p[7]}</div></div>`:''}
+            ${catatan&&catatan!=='-'?`<div class="ri-row ri-catatan"><div class="ri-key">Catatan</div><div class="ri-val" style="font-weight:500;color:var(--gray)">${catatan}</div></div>`:''}
+          </div>
+        </div>`;
+      }).join('')+'</div>';
+
+    } catch(e){
+      container.innerHTML='<div class="empty-state"><div class="empty-icon">❌</div><p>Gagal memuat data. Periksa koneksi internet.</p></div>';
+    }
+  }
+</script>
+</body>
+</html>
