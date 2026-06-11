@@ -257,7 +257,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL="https://script.google.com/macros/s/AKfycbyS0QQ-aFQoBK4Hbu8pbq6npQSC7J3WWHUoOqdCJN7bT9v9dVUTYo4PLWmjZsMXFBEkpg/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyS0QQ-aFQoBK4Hbu8pbq6npQSC7J3WWHUoOqdCJN7bT9v9dVUTYo4PLWmjZsMXFBEkpg/exec";
   const ADMIN_PASS = "assyifa2025";
 
   const BULAN_NAMA = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -354,7 +354,7 @@
         if(row[5]==='Hadir'){
           if(row[6]==='Hadir') p.hadir++;
           if(row[6]==='Lembur') { p.hadir++; p.lemburMasuk++; }
-          if(row[6]==='Perjalanan Dinas') p.dinas++;
+          if(row[6]==='Perjalanan Dinas') { p.hadir++; p.dinas++; }
           if(row[6]==='Sakit') p.sakit++;
           if(row[6]==='Izin') p.izin++;
           if(String(row[7]).includes('Terlambat')) p.terlambat++;
@@ -434,16 +434,20 @@
         });
         const tglList=Object.values(tglMap).sort((a,b)=>a.tgl.localeCompare(b.tgl));
 
+        const ketEmoji2={'Hadir':'✅','Lembur':'🌙','Perjalanan Dinas':'🧳','Sakit':'🤒','Izin':'📋','Pulang Normal':'🔵','Pulang Lembur':'🌙','Pulang Cepat':'⏩'};
+        const ketClass2={'Hadir':'badge-hadir','Sakit':'badge-sakit','Izin':'badge-izin','Perjalanan Dinas':'badge-dinas','Lembur':'badge-lembur','Pulang Normal':'badge-pulang','Pulang Lembur':'badge-lembur','Pulang Cepat':'badge-cepat'};
         const ketBadge=(k)=>{
-          const map={'Hadir':'badge-hadir','Lembur':'badge-lembur','Perjalanan Dinas':'badge-dinas','Sakit':'badge-sakit','Izin':'badge-izin','Pulang Normal':'badge-pulang','Pulang Lembur':'badge-lembur','Pulang Cepat':'badge-cepat'};
-          const emoji={'Hadir':'✅','Lembur':'🌙','Perjalanan Dinas':'🧳','Sakit':'🤒','Izin':'📋','Pulang Normal':'🔵','Pulang Lembur':'🌙','Pulang Cepat':'⏩'};
-          return `<span class="badge ${map[k]||'badge-hadir'}">${emoji[k]||''} ${k}</span>`;
+          if(!k||k==='-') return '-';
+          return `<span class="badge ${ketClass2[k]||'badge-hadir'}">${ketEmoji2[k]||''} ${k}</span>`;
         };
         const statusBadge=(s)=>{
-          if(!s) return '-';
+          if(!s||s==='-') return '-';
           if(String(s).includes('Terlambat')) return `<span class="badge badge-terlambat">⏰ ${s}</span>`;
           if(String(s).includes('Tepat')) return `<span class="badge badge-tepat">✅ Tepat Waktu</span>`;
           if(String(s).includes('Lembur')) return `<span class="badge badge-lembur">🌙 ${s}</span>`;
+          if(String(s).includes('Dinas')) return `<span class="badge badge-dinas">🧳 ${s}</span>`;
+          if(String(s).includes('Izin')) return `<span class="badge badge-izin">📋 ${s}</span>`;
+          if(String(s).includes('Sakit')) return `<span class="badge badge-sakit">🤒 ${s}</span>`;
           return s;
         };
 
