@@ -260,9 +260,12 @@
     <div class="ket-grid" id="ketMasukGrid">
       <label class="ket-pill selected" id="pill-hadir" onclick="pilihKet('masuk','Hadir')"><span class="dot"></span> ✅ Hadir</label>
       <label class="ket-pill ket-lembur" id="pill-lembur-masuk" onclick="pilihKet('masuk','Lembur')"><span class="dot"></span> 🌙 Lembur</label>
+      <label class="ket-pill ket-sakit" id="pill-sakit-masuk" onclick="pilihKet('masuk','Sakit')"><span class="dot"></span> 🤒 Sakit</label>
+      <label class="ket-pill ket-izin" id="pill-izin-masuk" onclick="pilihKet('masuk','Izin')"><span class="dot"></span> 📋 Izin</label>
       <label class="ket-pill ket-dinas" id="pill-dinas-masuk" onclick="pilihKet('masuk','Perjalanan Dinas')" style="grid-column:1/-1"><span class="dot"></span> 🧳 Perjalanan Dinas</label>
     </div>
     <div class="lembur-info" id="lemburInfoMasuk">🌙 Kamu akan absen masuk sebagai <b>Lembur</b>. Absen pulang otomatis tercatat sebagai Pulang Lembur.</div>
+    <div class="lembur-info" id="izinInfoMasuk" style="display:none;background:var(--gold-light);border-color:rgba(201,134,10,0.2);color:var(--gold)">📋 Keterangan <b>Izin</b> dipilih. Wajib mengisi catatan alasan izin di kolom bawah.</div>
   </div>
 
   <!-- Keterangan PULANG -->
@@ -541,10 +544,21 @@
 
     if(mode==='masuk'){
       document.querySelectorAll('#ketMasukGrid .ket-pill').forEach(p=>p.classList.remove('selected'));
-      const map={'Hadir':'hadir','Lembur':'lembur-masuk','Perjalanan Dinas':'dinas-masuk'};
+      const map={'Hadir':'hadir','Lembur':'lembur-masuk','Sakit':'sakit-masuk','Izin':'izin-masuk','Perjalanan Dinas':'dinas-masuk'};
       document.getElementById('pill-'+map[ket])?.classList.add('selected');
       const lemburInfo=document.getElementById('lemburInfoMasuk');
       lemburInfo.classList.toggle('show', ket==='Lembur');
+      const izinInfo=document.getElementById('izinInfoMasuk');
+      izinInfo.style.display = ket==='Izin' ? 'block' : 'none';
+      // Wajib catatan untuk Izin
+      const catatanLabel=document.getElementById('catatanLabel');
+      if(ket==='Izin'){
+        catatanLabel.textContent='(wajib diisi untuk izin)';
+        document.getElementById('catatanWajib').classList.add('show');
+      } else if(ket!=='Pulang Cepat') {
+        catatanLabel.textContent='(opsional)';
+        document.getElementById('catatanWajib').classList.remove('show');
+      }
     } else {
       document.querySelectorAll('#ketPulangGrid .ket-pill').forEach(p=>p.classList.remove('selected'));
       const map={'Pulang Normal':'pulang-normal','Pulang Lembur':'pulang-lembur','Pulang Cepat':'pulang-cepat'};
@@ -586,9 +600,10 @@
     const ket=document.getElementById('keterangan').value;
     const notes=document.getElementById('notes').value.trim();
 
-    // Validasi catatan wajib untuk pulang cepat
-    if(ket==='Pulang Cepat' && !notes){
-      showStatus('error','⚠️','Catatan Wajib Diisi','Tuliskan alasan pulang cepat di kolom catatan.');
+    // Validasi catatan wajib untuk Izin dan Pulang Cepat
+    if((ket==='Izin' || ket==='Pulang Cepat') && !notes){
+      const label = ket==='Izin' ? 'izin' : 'pulang cepat';
+      showStatus('error','⚠️','Catatan Wajib Diisi','Tuliskan alasan '+label+' di kolom catatan.');
       return;
     }
 
