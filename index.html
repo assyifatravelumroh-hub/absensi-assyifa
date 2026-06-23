@@ -160,6 +160,12 @@
   .jam-info-text{font-size:12px;color:var(--orange);font-weight:600;line-height:1.5;}
 
   .divider{width:100%;height:1px;background:var(--border);margin:4px 0 14px;}
+
+  /* Mode Libur */
+  .clock-card.mode-libur{background:linear-gradient(135deg,#7f1d1d 0%,#c0392b 60%,#e74c3c 100%)!important;}
+  .form-card.mode-libur{border:2px solid rgba(192,57,43,0.3);background:linear-gradient(135deg,#fff,#fdecea);}
+  .mode-libur-badge{display:none;width:100%;max-width:420px;background:var(--red-light);border:1.5px solid rgba(192,57,43,0.3);border-radius:12px;padding:12px 16px;margin-bottom:12px;text-align:center;font-size:13px;font-weight:700;color:var(--red);}
+  .mode-libur-badge.show{display:block;}
 </style>
 </head>
 <body>
@@ -176,18 +182,25 @@
   </div>
 </div>
 
-<div class="clock-card">
+<div class="mode-libur-badge" id="liburBadge"></div>
+<div class="clock-card" id="clockCard">
   <div class="clock-inner">
     <div class="clock-left">
       <div class="clock-label">Waktu Sekarang (WIB)</div>
       <div class="clock-time" id="jam">--:--:--</div>
       <div class="clock-date" id="tanggal">--</div>
     </div>
-    <div class="jam-kerja">
+    <div class="jam-kerja" id="jamKerjaBox">
       <div class="jk-title">Jam Kerja</div>
       <div class="jk-row"><span class="jk-dot masuk"></span> Masuk 08.00</div>
       <div class="jk-row"><span class="jk-dot pulang"></span> Pulang 16.00</div>
     </div>
+  </div>
+  <!-- Banner libur -->
+  <div id="liburBanner" style="display:none;margin-top:14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;text-align:center;line-height:1.5;">
+    <div id="liburIcon" style="font-size:24px;margin-bottom:4px"></div>
+    <div id="liburNama"></div>
+    <div style="font-size:11px;opacity:0.8;margin-top:3px">Hanya absen lembur yang tersedia</div>
   </div>
 </div>
 
@@ -311,7 +324,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyS0QQ-aFQoBK4Hbu8pbq6npQSC7J3WWHUoOqdCJN7bT9v9dVUTYo4PLWmjZsMXFBEkpg/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/GANTI_DENGAN_URL_ANDA/exec";
 
   const PEGAWAI = {
     "Teguh Muhammad Firdaus":"Direktur Utama",
@@ -328,14 +341,116 @@
   let fotoBase64="", selectedNama="", selectedDivisi="";
   let statusHariIni = null; // {hadir: bool, pulang: bool, keteranganMasuk: string, jamMasuk: string}
 
+
+  // ============================================================
+  // DATA HARI LIBUR NASIONAL & CUTI BERSAMA 2026
+  // ============================================================
+  const HARI_LIBUR = {
+    // Januari 2026
+    "01/01/2026": "Tahun Baru 2026 🎆",
+    "16/01/2026": "Isra Mikraj Nabi Muhammad SAW 🌙",
+    // Februari 2026
+    "16/02/2026": "Cuti Bersama Imlek 🧧",
+    "17/02/2026": "Tahun Baru Imlek 2577 🧧",
+    // Maret 2026
+    "18/03/2026": "Cuti Bersama Nyepi 🕊️",
+    "19/03/2026": "Hari Raya Nyepi 🕊️",
+    "20/03/2026": "Cuti Bersama Idul Fitri 🌙",
+    "21/03/2026": "Hari Raya Idul Fitri 1447H 🌙",
+    "22/03/2026": "Hari Raya Idul Fitri 1447H 🌙",
+    "23/03/2026": "Cuti Bersama Idul Fitri 🌙",
+    "24/03/2026": "Cuti Bersama Idul Fitri 🌙",
+    // April 2026
+    "03/04/2026": "Wafat Yesus Kristus ✝️",
+    "05/04/2026": "Hari Paskah ✝️",
+    // Mei 2026
+    "01/05/2026": "Hari Buruh Internasional 👷",
+    "14/05/2026": "Kenaikan Yesus Kristus ✝️",
+    "15/05/2026": "Cuti Bersama Kenaikan Yesus ✝️",
+    "27/05/2026": "Hari Raya Idul Adha 1447H 🐑",
+    "28/05/2026": "Cuti Bersama Idul Adha 🐑",
+    "31/05/2026": "Hari Raya Waisak 2570 BE ☸️",
+    // Juni 2026
+    "01/06/2026": "Hari Lahir Pancasila 🇮🇩",
+    "16/06/2026": "Tahun Baru Islam 1448H 🌙",
+    // Agustus 2026
+    "17/08/2026": "HUT Kemerdekaan RI ke-81 🇮🇩",
+    "25/08/2026": "Maulid Nabi Muhammad SAW 🌙",
+    // Desember 2026
+    "24/12/2026": "Cuti Bersama Natal 🎄",
+    "25/12/2026": "Hari Natal 🎄",
+    // Januari 2027
+    "01/01/2027": "Tahun Baru 2027 🎆"
+  };
+
+  // Cek apakah hari ini libur
+  function cekHariLibur() {
+    const now = new Date();
+    const tgl = now.toLocaleDateString('id-ID', {
+      day:'2-digit', month:'2-digit', year:'numeric', timeZone:'Asia/Jakarta'
+    }).replace(/\//g,'/');
+    const isMinggu = now.toLocaleDateString('id-ID', {weekday:'long', timeZone:'Asia/Jakarta'}) === 'Minggu';
+    const namaLibur = HARI_LIBUR[tgl] || null;
+    return { isMinggu, namaLibur, isLibur: isMinggu || !!namaLibur };
+  }
+
   // Clock
+  let lastLiburCheck = '';
+
   function updateClock(){
     const now=new Date();
     document.getElementById('jam').textContent=now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'Asia/Jakarta'});
     document.getElementById('tanggal').textContent=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Jakarta'});
+
+    // Cek mode libur
+    const tglHariIni = now.toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Asia/Jakarta'}).replace(/\//g,'/');
+    if(tglHariIni !== lastLiburCheck){
+      lastLiburCheck = tglHariIni;
+      applyModeLibur();
+    }
     updateTombolState();
   }
   updateClock(); setInterval(updateClock,1000);
+
+  function applyModeLibur(){
+    const {isMinggu, namaLibur, isLibur} = cekHariLibur();
+    const clockCard = document.getElementById('clockCard');
+    const formCard  = document.getElementById('formCard');
+    const liburBanner = document.getElementById('liburBanner');
+    const liburBadge  = document.getElementById('liburBadge');
+    const jamKerjaBox = document.getElementById('jamKerjaBox');
+
+    if(isLibur){
+      // Mode libur
+      clockCard.classList.add('mode-libur');
+      formCard.classList.add('mode-libur');
+      liburBanner.style.display = 'block';
+      jamKerjaBox.style.display = 'none';
+
+      const nama = namaLibur || (isMinggu ? 'Hari Minggu — Libur Mingguan 🌴' : '');
+      document.getElementById('liburIcon').textContent = isMinggu && !namaLibur ? '🌴' : '';
+      document.getElementById('liburNama').textContent = nama;
+      liburBadge.classList.add('show');
+      liburBadge.innerHTML = '🔴 MODE LIBUR — ' + nama + '<br><small style="font-weight:500">Absensi normal nonaktif. Hanya tersedia absen lembur.</small>';
+
+      // Sembunyikan keterangan masuk normal, tampilkan hanya lembur
+      document.getElementById('ketMasukSection').innerHTML = `
+        <label>Keterangan Masuk</label>
+        <div style="background:var(--purple-light);border:1.5px solid rgba(109,40,217,0.2);border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+          <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px">🌙 Mode Lembur Hari Libur</div>
+          <div style="font-size:12px;color:var(--purple);opacity:0.85">Kamu absen pada hari libur. Absensi ini otomatis tercatat sebagai <b>Lembur Hari Libur</b>.</div>
+        </div>
+        <input type="hidden" id="keterangan" value="Lembur"/>
+      `;
+    } else {
+      // Mode normal
+      clockCard.classList.remove('mode-libur');
+      formCard.classList.remove('mode-libur');
+      liburBanner.style.display = 'none';
+      liburBadge.classList.remove('show');
+      jamKerjaBox.style.display = 'block';
+    }
+  }
 
   // JSONP
   function jsonpFetch(url){
