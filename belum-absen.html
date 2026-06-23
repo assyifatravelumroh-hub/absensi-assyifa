@@ -257,7 +257,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyS0QQ-aFQoBK4Hbu8pbq6npQSC7J3WWHUoOqdCJN7bT9v9dVUTYo4PLWmjZsMXFBEkpg/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/GANTI_DENGAN_URL_ANDA/exec";
   const ADMIN_PASS = "assyifa2025";
 
   const BULAN_NAMA = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -293,16 +293,43 @@
     }
   }
 
-  // Hari kerja dalam sebulan (Senin-Sabtu, kecuali Minggu)
+  // Data hari libur nasional 2026
+  const LIBUR_NASIONAL = [
+    "01/01/2026","16/01/2026","16/02/2026","17/02/2026",
+    "18/03/2026","19/03/2026","20/03/2026","21/03/2026","22/03/2026","23/03/2026","24/03/2026",
+    "03/04/2026","05/04/2026","01/05/2026","14/05/2026","15/05/2026",
+    "27/05/2026","28/05/2026","31/05/2026","01/06/2026","16/06/2026",
+    "17/08/2026","25/08/2026","24/12/2026","25/12/2026","01/01/2027"
+  ];
+
+  // Hitung hari kerja (exclude Minggu + libur nasional)
   function hitungHariKerja(bulan, tahun){
     if(!bulan||!tahun) return 0;
     const tgl=new Date(parseInt(tahun), parseInt(bulan)-1, 1);
     let count=0;
     while(tgl.getMonth()===parseInt(bulan)-1){
-      if(tgl.getDay()!==0) count++; // bukan Minggu
+      const isMinggu = tgl.getDay()===0;
+      // Format dd/MM/yyyy
+      const dd=String(tgl.getDate()).padStart(2,'0');
+      const mm=String(tgl.getMonth()+1).padStart(2,'0');
+      const yyyy=tgl.getFullYear();
+      const tglStr=dd+'/'+mm+'/'+yyyy;
+      const isLibur = LIBUR_NASIONAL.includes(tglStr);
+      if(!isMinggu && !isLibur) count++;
       tgl.setDate(tgl.getDate()+1);
     }
     return count;
+  }
+
+  // Cek apakah tanggal tertentu adalah hari libur/Minggu
+  function isHariLiburTgl(tglStr){
+    // tglStr format: dd/MM/yyyy
+    const parts = tglStr.split('/');
+    if(parts.length < 3) return false;
+    const d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+    const isMinggu = d.getDay() === 0;
+    const isLibur = LIBUR_NASIONAL.includes(tglStr);
+    return isMinggu || isLibur;
   }
 
   async function loadData(){
@@ -351,13 +378,23 @@
         const nama=row[3];
         if(!perKaryawan[nama]) return;
         const p=perKaryawan[nama];
+        const tglRow = String(row[0]); // dd/MM/yyyy
+        const isLibur = isHariLiburTgl(tglRow);
+
         if(row[5]==='Hadir'){
-          if(row[6]==='Hadir') p.hadir++;
-          if(row[6]==='Lembur') { p.hadir++; p.lemburMasuk++; }
-          if(row[6]==='Perjalanan Dinas') { p.hadir++; p.dinas++; }
-          if(row[6]==='Sakit') p.sakit++;
-          if(row[6]==='Izin') p.izin++;
-          if(String(row[7]).includes('Terlambat')) p.terlambat++;
+          if(row[6]==='Lembur') {
+            // Lembur di hari libur — hitung terpisah, tidak masuk hadir normal
+            p.lemburMasuk++;
+            if(isLibur) p.lemburHariLibur = (p.lemburHariLibur||0)+1;
+            else p.hadir++;
+          } else if(!isLibur) {
+            // Absen normal di hari kerja saja
+            if(row[6]==='Hadir') p.hadir++;
+            if(row[6]==='Perjalanan Dinas') { p.hadir++; p.dinas++; }
+            if(row[6]==='Sakit') p.sakit++;
+            if(row[6]==='Izin') p.izin++;
+            if(String(row[7]).includes('Terlambat')) p.terlambat++;
+          }
           p.rows.push(row);
         }
         if(row[5]==='Pulang'){
@@ -392,6 +429,49 @@
           <div class="sum-card c-purple"><div class="sum-num">${totLembur}</div><div class="sum-label">Lembur</div></div>
         </div>
         <div class="karyawan-section">`;
+
+
+        // ============================================================
+        // HITUNG SKOR KINERJA KARYAWAN
+        // ============================================================
+        function hitungSkor(p, hariKerja) {
+          // Bobot penilaian
+          // Kehadiran: 40%, Ketepatan Waktu: 30%, Lembur (bonus): 10%, Sakit/Izin: -20%
+          const totalMasuk = p.hadir + p.sakit + p.izin + p.dinas;
+          const persenHadir = hariKerja > 0 ? (totalMasuk / hariKerja) * 100 : 0;
+          const persenTepat = p.hadir > 0 ? ((p.hadir - p.terlambat) / p.hadir) * 100 : 100;
+          const bonusLembur = Math.min(p.lemburPulang * 2, 10); // max 10 poin
+          const pengurang = (p.sakit * 1.5) + (p.izin * 1); // sakit -1.5, izin -1 per hari
+
+          const skorKehadiran = (persenHadir / 100) * 40;
+          const skorTepat = (persenTepat / 100) * 30;
+          const skorTotal = Math.min(100, Math.max(0,
+            skorKehadiran + skorTepat + bonusLembur - pengurang
+          ));
+
+          let grade, bintang, warna;
+          if(skorTotal >= 90)      { grade='A'; bintang='⭐⭐⭐⭐⭐'; warna='#1a7a4a'; }
+          else if(skorTotal >= 80) { grade='B'; bintang='⭐⭐⭐⭐'; warna='#2d9e62'; }
+          else if(skorTotal >= 70) { grade='C'; bintang='⭐⭐⭐'; warna='#c9860a'; }
+          else if(skorTotal >= 60) { grade='D'; bintang='⭐⭐'; warna='#e67e22'; }
+          else                     { grade='E'; bintang='⭐'; warna='#c0392b'; }
+
+          const keterangan = {
+            'A': 'Sangat Baik 🏆',
+            'B': 'Baik 👍',
+            'C': 'Cukup 📊',
+            'D': 'Perlu Perbaikan ⚠️',
+            'E': 'Kurang 🔴'
+          };
+
+          return {
+            skor: Math.round(skorTotal),
+            grade, bintang, warna,
+            keterangan: keterangan[grade],
+            persenHadir: Math.round(persenHadir),
+            persenTepat: Math.round(persenTepat)
+          };
+        }
 
       // Render per karyawan
       const maxVal=Math.max(...karyawanList.map(n=>{
@@ -467,6 +547,7 @@
           </tr>`;
         }).join('');
 
+        const skor = hitungSkor(p, hariKerja);
         html+=`
           <div class="karyawan-card">
             <div class="karyawan-header">
@@ -474,6 +555,11 @@
               <div class="karyawan-info">
                 <div class="karyawan-nama">${nama}</div>
                 <div class="karyawan-divisi">${divisi} &nbsp;|&nbsp; ${periodeLabel} &nbsp;|&nbsp; ${totalAbsen} hari tercatat ${hariKerja?'dari '+hariKerja+' hari kerja':''}</div>
+              </div>
+              <div style="text-align:center;background:rgba(255,255,255,0.15);border-radius:10px;padding:8px 14px;flex-shrink:0;">
+                <div style="font-size:22px;font-weight:800;line-height:1">${skor.skor}</div>
+                <div style="font-size:16px">${skor.bintang}</div>
+                <div style="font-size:11px;opacity:0.85;margin-top:2px">Grade ${skor.grade}</div>
               </div>
             </div>
             <div class="karyawan-body">
@@ -484,7 +570,42 @@
                 <div class="stat-pill sp-gold">📋 Izin: ${p.izin}</div>
                 <div class="stat-pill sp-blue">🧳 Dinas: ${p.dinas}</div>
                 <div class="stat-pill sp-purple">🌙 Lembur: ${p.lemburPulang}</div>
+                ${p.lemburHariLibur?`<div class="stat-pill" style="background:#ede9fe;color:#6d28d9">🔴 Lembur Hari Libur: ${p.lemburHariLibur}</div>`:''}
                 ${hariKerja?`<div class="stat-pill" style="background:#f3f4f6;color:var(--gray)">📈 Kehadiran: ${persenHadir}%</div>`:''}
+              </div>
+              <!-- Skor Kinerja -->
+              <div style="background:linear-gradient(135deg,${skor.warna}15,${skor.warna}08);border:1.5px solid ${skor.warna}30;border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div style="font-size:13px;font-weight:700;color:var(--text)">📈 Penilaian Kinerja</div>
+                  <div style="font-size:12px;font-weight:700;color:${skor.warna}">${skor.keterangan}</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;text-align:center;">
+                  <div style="background:white;border-radius:8px;padding:8px;">
+                    <div style="font-size:18px;font-weight:800;color:${skor.warna}">${skor.skor}</div>
+                    <div style="font-size:10px;color:var(--gray);font-weight:600">SKOR</div>
+                  </div>
+                  <div style="background:white;border-radius:8px;padding:8px;">
+                    <div style="font-size:18px;font-weight:800;color:var(--green)">${skor.persenHadir}%</div>
+                    <div style="font-size:10px;color:var(--gray);font-weight:600">HADIR</div>
+                  </div>
+                  <div style="background:white;border-radius:8px;padding:8px;">
+                    <div style="font-size:18px;font-weight:800;color:var(--blue)">${skor.persenTepat}%</div>
+                    <div style="font-size:10px;color:var(--gray);font-weight:600">TEPAT WAKTU</div>
+                  </div>
+                  <div style="background:white;border-radius:8px;padding:8px;">
+                    <div style="font-size:18px;font-weight:800;color:var(--purple)">${p.lemburPulang}</div>
+                    <div style="font-size:10px;color:var(--gray);font-weight:600">LEMBUR</div>
+                  </div>
+                </div>
+                <!-- Progress bar skor -->
+                <div style="margin-top:10px;">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:4px;">
+                    <span>Skor Kinerja</span><span>${skor.skor}/100</span>
+                  </div>
+                  <div style="background:#f3f4f6;border-radius:20px;height:10px;overflow:hidden;">
+                    <div style="width:${skor.skor}%;height:100%;background:${skor.warna};border-radius:20px;transition:width 0.6s ease;"></div>
+                  </div>
+                </div>
               </div>
               <div class="chart-wrap">
                 <div class="chart-title">📊 Grafik Kehadiran</div>
