@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Input Admin — Assyifa Tour & Travel</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#1a7a4a;--green-light:#e8f5ee;--green-mid:#2d9e62;
+    --blue:#1a4fa0;--blue-light:#e8f0fb;
+    --gold:#c9860a;--gold-light:#fdf3e0;
+    --red:#c0392b;--red-light:#fdecea;
+    --purple:#6d28d9;--purple-light:#ede9fe;
+    --orange:#d97706;--orange-light:#fef3c7;
+    --gray:#6b7280;--border:#e5e7eb;
+    --bg:#f7f8fa;--white:#fff;--text:#111827;
+    --shadow:0 4px 24px rgba(0,0,0,0.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+  /* Auth */
+  .auth-gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .auth-card{background:var(--white);border-radius:20px;padding:36px 32px;box-shadow:var(--shadow);border:1px solid var(--border);width:100%;max-width:360px;text-align:center;}
+  .auth-back{display:inline-flex;align-items:center;gap:6px;color:var(--gray);font-size:13px;font-weight:600;text-decoration:none;margin-bottom:20px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);}
+  .auth-back:hover{border-color:var(--green);color:var(--green);}
+  .auth-icon{font-size:48px;margin-bottom:12px;}
+  .auth-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+  .auth-sub{font-size:13px;color:var(--gray);margin-bottom:24px;line-height:1.5;}
+  .auth-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px;}
+  .auth-input:focus{border-color:var(--green);}
+  .auth-btn{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;}
+  .auth-err{color:var(--red);font-size:13px;margin-top:10px;display:none;}
+
+  /* Topbar */
+  .topbar{background:linear-gradient(135deg,#0f4c2a,#1a7a4a);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;color:white;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
+  .topbar-left{display:flex;align-items:center;gap:10px;}
+  .topbar-title{font-size:15px;font-weight:800;line-height:1.2;}
+  .topbar-title small{font-size:11px;font-weight:500;opacity:0.7;display:block;}
+
+  /* Nav */
+  .nav-bar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;}
+  .nav-btn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+  .nav-btn:hover{border-color:var(--green);color:var(--green);}
+  .nav-btn.active{background:var(--green);color:white;border-color:var(--green);}
+
+  /* Main */
+  .main{display:none;padding:20px;max-width:600px;margin:0 auto;}
+
+  /* Form card */
+  .form-card{background:var(--white);border-radius:14px;padding:24px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:16px;}
+  .form-title{font-size:15px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+  .form-title::before{content:'';display:block;width:4px;height:18px;background:var(--green);border-radius:2px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
+  .field select,.field input,.field textarea{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--bg);outline:none;transition:border-color 0.2s;-webkit-appearance:none;appearance:none;}
+  .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
+  .field textarea{resize:none;height:90px;line-height:1.5;}
+  .field select:focus,.field input:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,122,74,0.1);background:white;}
+
+  /* Keterangan pills */
+  .ket-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .ket-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--gray);background:var(--bg);transition:all 0.15s;user-select:none;}
+  .ket-pill .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--border);}
+  .ket-pill.selected{border-color:var(--green);background:var(--green-light);color:var(--green);}
+  .ket-pill.selected .dot{background:var(--green);}
+  .ket-pill.ket-sakit.selected{border-color:var(--red);background:var(--red-light);color:var(--red);}
+  .ket-pill.ket-sakit.selected .dot{background:var(--red);}
+  .ket-pill.ket-izin.selected{border-color:var(--gold);background:var(--gold-light);color:var(--gold);}
+  .ket-pill.ket-izin.selected .dot{background:var(--gold);}
+  .ket-pill.ket-dinas.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
+  .ket-pill.ket-dinas.selected .dot{background:var(--blue);}
+  .ket-pill.ket-alpha.selected{border-color:var(--red);background:var(--red-light);color:var(--red);}
+  .ket-pill.ket-alpha.selected .dot{background:var(--red);}
+  .ket-pill.ket-lembur.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple);}
+  .ket-pill.ket-lembur.selected .dot{background:var(--purple);}
+
+  /* Wajib catatan */
+  .wajib-note{font-size:11px;color:var(--red);font-weight:600;margin-top:5px;display:none;}
+  .wajib-note.show{display:block;}
+
+  /* Submit btn */
+  .btn-submit{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-submit:hover{opacity:0.88;}
+  .btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
+
+  /* Status */
+  .status-card{display:none;border-radius:12px;padding:16px 18px;margin-bottom:14px;border:1.5px solid;animation:slideIn 0.3s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+  .status-card.success{background:var(--green-light);border-color:rgba(26,122,74,0.3);color:var(--green);display:block;}
+  .status-card.error{background:var(--red-light);border-color:rgba(192,57,43,0.3);color:var(--red);display:block;}
+  .status-title{font-size:15px;font-weight:700;margin-bottom:3px;}
+  .status-body{font-size:13px;opacity:0.85;}
+
+  /* Riwayat input */
+  .riwayat-card{background:var(--white);border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);}
+  .riwayat-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .riwayat-title{font-size:14px;font-weight:700;}
+  .riwayat-list{padding:8px 0;}
+  .riwayat-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid #f3f4f6;}
+  .riwayat-item:last-child{border-bottom:none;}
+  .ri-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;background:var(--green-light);color:var(--green);}
+  .ri-info{flex:1;}
+  .ri-nama{font-size:13px;font-weight:700;}
+  .ri-detail{font-size:11px;color:var(--gray);margin-top:2px;}
+  .badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-sakit{background:var(--red-light);color:var(--red);}
+  .badge-izin{background:var(--gold-light);color:var(--gold);}
+  .badge-dinas{background:var(--blue-light);color:var(--blue);}
+  .badge-alpha{background:var(--red-light);color:var(--red);}
+  .badge-lembur{background:var(--purple-light);color:var(--purple);}
+
+  .spinner{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .info-box{background:var(--gold-light);border:1px solid rgba(201,134,10,0.2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--gold);font-weight:500;margin-bottom:14px;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<!-- Auth -->
+<div class="auth-gate" id="authGate">
+  <div class="auth-card">
+    <a class="auth-back" href="index.html">← Kembali ke Absensi</a>
+    <div class="auth-icon">✏️</div>
+    <div class="auth-title">Input Admin</div>
+    <div class="auth-sub">Assyifa Tour & Travel<br>Input absensi khusus admin</div>
+    <input type="password" class="auth-input" id="passInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')cekPass()"/>
+    <button class="auth-btn" onclick="cekPass()">Masuk</button>
+    <div class="auth-err" id="authErr">❌ Password salah.</div>
+  </div>
+</div>
+
+<!-- Topbar -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="topbar-left">
+    <span style="font-size:20px">✈️</span>
+    <div class="topbar-title">Input Admin<small>Assyifa Tour & Travel</small></div>
+  </div>
+</div>
+
+<!-- Nav -->
+<div class="nav-bar" id="navBar" style="display:none">
+  <a class="nav-btn" href="index.html">📋 Absensi</a>
+  <a class="nav-btn" href="riwayat.html">📅 Riwayat</a>
+  <a class="nav-btn" href="belum-absen.html">👥 Rekap Admin</a>
+  <a class="nav-btn" href="dashboard-admin.html">📊 Dashboard</a>
+  <a class="nav-btn active" href="input-admin.html">✏️ Input Admin</a>
+</div>
+
+<!-- Main -->
+<div class="main" id="mainContent">
+
+  <div class="info-box">
+    💡 Halaman ini untuk input absensi pegawai yang <b>tidak bisa absen sendiri</b> — seperti sakit, izin, perjalanan dinas, atau koreksi data. Catatan wajib diisi untuk Sakit, Izin, dan Perjalanan Dinas.
+  </div>
+
+  <!-- Status -->
+  <div class="status-card" id="statusCard">
+    <div class="status-title" id="statusTitle"></div>
+    <div class="status-body" id="statusBody"></div>
+  </div>
+
+  <!-- Form Input -->
+  <div class="form-card">
+    <div class="form-title">Input Absensi Pegawai</div>
+
+    <div class="field">
+      <label>Nama Pegawai</label>
+      <select id="nama">
+        <option value="">-- Pilih pegawai --</option>
+        <option value="Teguh Muhammad Firdaus|Direktur Utama">Teguh Muhammad Firdaus</option>
+        <option value="Muhamad Arif Basuni|Direktur Operasional">Muhamad Arif Basuni</option>
+        <option value="Cepi Sutanto|Direktur Marketing">Cepi Sutanto</option>
+        <option value="Azhar Dzaky Muhamad HM|Manajer Operasional">Azhar Dzaky Muhamad HM</option>
+        <option value="Fithri Amalia Rahma|Manajer Keuangan">Fithri Amalia Rahma</option>
+        <option value="Nabila Azahra|Staff Marketing Media">Nabila Azahra</option>
+        <option value="Andy Rohaendy|Staff Marketing">Andy Rohaendy</option>
+        <option value="Zenal Ali Mansur|Staff Marketing">Zenal Ali Mansur</option>
+        <option value="Dedi|Staff Operasional">Dedi</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Tanggal</label>
+      <input type="date" id="tanggal"/>
+    </div>
+
+    <div class="field">
+      <label>Keterangan</label>
+      <div class="ket-grid">
+        <label class="ket-pill ket-sakit" id="pill-sakit" onclick="pilihKet('Sakit')"><span class="dot"></span> 🤒 Sakit</label>
+        <label class="ket-pill ket-izin" id="pill-izin" onclick="pilihKet('Izin')"><span class="dot"></span> 📋 Izin</label>
+        <label class="ket-pill ket-dinas" id="pill-dinas" onclick="pilihKet('Perjalanan Dinas')"><span class="dot"></span> 🧳 Perjalanan Dinas</label>
+        <label class="ket-pill ket-lembur" id="pill-lembur" onclick="pilihKet('Lembur')"><span class="dot"></span> 🌙 Lembur</label>
+        <label class="ket-pill ket-alpha" id="pill-alpha" onclick="pilihKet('Alpha')" style="grid-column:1/-1"><span class="dot"></span> 🔴 Alpha (Tidak Hadir Tanpa Keterangan)</label>
+      </div>
+      <input type="hidden" id="keterangan" value=""/>
+      <div class="wajib-note" id="wajibNote">⚠️ Catatan wajib diisi untuk keterangan ini!</div>
+    </div>
+
+    <div class="field">
+      <label>Catatan / Alasan <span id="catatanLabel" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">(opsional)</span></label>
+      <textarea id="catatan" placeholder="Tuliskan keterangan atau alasan..."></textarea>
+    </div>
+
+    <button class="btn-submit" id="btnSubmit" onclick="submitInput()">
+      ✅ Simpan Absensi
+    </button>
+  </div>
+
+  <!-- Riwayat Input Hari Ini -->
+  <div class="riwayat-card">
+    <div class="riwayat-header">
+      <div class="riwayat-title">📋 Riwayat Input Hari Ini</div>
+      <button onclick="loadRiwayat()" style="background:none;border:none;font-size:12px;color:var(--green);cursor:pointer;font-weight:600">🔄 Refresh</button>
+    </div>
+    <div class="riwayat-list" id="riwayatList">
+      <div style="text-align:center;padding:24px;color:var(--gray);font-size:13px">Memuat...</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvA6ump9G6DQw8P3xfvL2OO2XdNLzcJj_n1Tx3gaOKDmd_00z2aCnyIz6Bu7jYn2Wa4Q/exec";
+  const ADMIN_PASS = "assyifa2025";
+
+  function jsonpFetch(url){
+    return new Promise((resolve,reject)=>{
+      const cbName='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+      const script=document.createElement('script');
+      const timeout=setTimeout(()=>{delete window[cbName];script.remove();reject(new Error('Timeout'));},15000);
+      window[cbName]=data=>{clearTimeout(timeout);delete window[cbName];script.remove();resolve(data);};
+      script.src=url+(url.includes('?')?'&':'?')+'callback='+cbName;
+      script.onerror=()=>{clearTimeout(timeout);reject(new Error('Error'));};
+      document.head.appendChild(script);
+    });
+  }
+
+  function cekPass(){
+    if(document.getElementById('passInput').value===ADMIN_PASS){
+      document.getElementById('authGate').style.display='none';
+      document.getElementById('topbar').style.display='flex';
+      document.getElementById('navBar').style.display='flex';
+      document.getElementById('mainContent').style.display='block';
+      // Set tanggal default hari ini
+      const today=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});
+      document.getElementById('tanggal').value=today;
+      loadRiwayat();
+    } else {
+      document.getElementById('authErr').style.display='block';
+      document.getElementById('passInput').value='';
+    }
+  }
+
+  function pilihKet(ket){
+    document.getElementById('keterangan').value=ket;
+    document.querySelectorAll('.ket-pill').forEach(p=>p.classList.remove('selected'));
+    const map={'Sakit':'sakit','Izin':'izin','Perjalanan Dinas':'dinas','Lembur':'lembur','Alpha':'alpha'};
+    document.getElementById('pill-'+map[ket])?.classList.add('selected');
+
+    // Catatan wajib untuk Sakit, Izin, Perjalanan Dinas
+    const wajib = ['Sakit','Izin','Perjalanan Dinas'].includes(ket);
+    document.getElementById('wajibNote').classList.toggle('show', wajib);
+    document.getElementById('catatanLabel').textContent = wajib ? '(wajib diisi)' : '(opsional)';
+  }
+
+  async function submitInput(){
+    const namaVal  = document.getElementById('nama').value;
+    const tglVal   = document.getElementById('tanggal').value;
+    const ket      = document.getElementById('keterangan').value;
+    const catatan  = document.getElementById('catatan').value.trim();
+
+    if(!namaVal){ showStatus('error','Nama belum dipilih','Pilih nama pegawai dulu.'); return; }
+    if(!tglVal) { showStatus('error','Tanggal belum diisi','Pilih tanggal absensi.'); return; }
+    if(!ket)    { showStatus('error','Keterangan belum dipilih','Pilih keterangan absensi.'); return; }
+    if(['Sakit','Izin','Perjalanan Dinas'].includes(ket) && !catatan){
+      showStatus('error','Catatan wajib diisi','Tuliskan alasan/keterangan untuk '+ket+'.'); return;
+    }
+
+    const [nama,divisi] = namaVal.split('|');
+    // Format tanggal ke dd/MM/yyyy
+    const [y,m,d] = tglVal.split('-');
+    const tglFormatted = d+'/'+m+'/'+y;
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span> Menyimpan...';
+
+    const params = new URLSearchParams({
+      action: 'inputAdmin',
+      nama, divisi: divisi||'-',
+      tanggal: tglFormatted,
+      keterangan: ket,
+      catatan: catatan||'-',
+      adminInput: 'true',
+      timestamp: Date.now()
+    });
+
+    try{
+      const data = await jsonpFetch(SCRIPT_URL+'?'+params.toString());
+      if(data.status==='ok'){
+        showStatus('success','✅ Berhasil Disimpan!','Absensi '+nama+' tanggal '+tglFormatted+' ('+ket+') telah dicatat.');
+        document.getElementById('nama').value='';
+        document.getElementById('catatan').value='';
+        document.getElementById('keterangan').value='';
+        document.querySelectorAll('.ket-pill').forEach(p=>p.classList.remove('selected'));
+        document.getElementById('wajibNote').classList.remove('show');
+        loadRiwayat();
+      } else {
+        showStatus('error','Gagal Menyimpan',data.message||'Terjadi kesalahan.');
+      }
+    } catch(e){
+      showStatus('error','Gagal','Periksa koneksi internet dan coba lagi.');
+    } finally{
+      btn.disabled=false;
+      btn.innerHTML='✅ Simpan Absensi';
+    }
+  }
+
+  async function loadRiwayat(){
+    const list = document.getElementById('riwayatList');
+    list.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray);font-size:13px">Memuat...</div>';
+
+    try{
+      const json = await jsonpFetch(SCRIPT_URL+'?action=getData&t='+Date.now());
+      const data = json.data||[];
+      const today = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Asia/Jakarta'}).replace(/\//g,'/');
+
+      const hariIni = data.filter(r=>r[0]===today && r[9]==='Admin');
+      if(hariIni.length===0){
+        list.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray);font-size:13px">Belum ada input admin hari ini.</div>';
+        return;
+      }
+
+      const ketClass={'Sakit':'badge-sakit','Izin':'badge-izin','Perjalanan Dinas':'badge-dinas','Alpha':'badge-alpha','Lembur':'badge-lembur'};
+      const ketEmoji={'Sakit':'🤒','Izin':'📋','Perjalanan Dinas':'🧳','Alpha':'🔴','Lembur':'🌙'};
+      list.innerHTML = hariIni.map(r=>`
+        <div class="riwayat-item">
+          <div class="ri-avatar">${r[3].charAt(0)}</div>
+          <div class="ri-info">
+            <div class="ri-nama">${r[3]}</div>
+            <div class="ri-detail">${r[4]} • ${r[2]} • ${r[8]!=='-'?r[8]:''}</div>
+          </div>
+          <span class="badge ${ketClass[r[6]]||'badge-sakit'}">${ketEmoji[r[6]]||''} ${r[6]}</span>
+        </div>`).join('');
+    } catch(e){
+      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--red);font-size:13px">Gagal memuat data.</div>';
+    }
+  }
+
+  function showStatus(type,title,body){
+    const card=document.getElementById('statusCard');
+    card.className='status-card '+type;
+    document.getElementById('statusTitle').textContent=title;
+    document.getElementById('statusBody').textContent=body;
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
+    setTimeout(()=>card.className='status-card',5000);
+  }
+</script>
+</body>
+</html>
