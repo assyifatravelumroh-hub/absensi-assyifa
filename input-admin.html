@@ -153,7 +153,13 @@
 <div class="main" id="mainContent">
 
   <div class="info-box">
-    💡 Halaman ini untuk input absensi pegawai yang <b>tidak bisa absen sendiri</b> — seperti sakit, izin, perjalanan dinas, atau koreksi data. Catatan wajib diisi untuk Sakit, Izin, dan Perjalanan Dinas.
+    💡 Halaman ini untuk input atau koreksi absensi pegawai — sakit, izin, perjalanan dinas, alpha, atau data tanggal lampau. Catatan <b>wajib diisi</b> untuk Sakit, Izin, dan Perjalanan Dinas.
+  </div>
+
+  <!-- Tab -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button onclick="switchTab('input')" id="tabInput" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--green);background:var(--green);color:white;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">➕ Input Baru</button>
+    <button onclick="switchTab('riwayat')" id="tabRiwayat" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);color:var(--gray);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">📋 Riwayat & Edit</button>
   </div>
 
   <!-- Status -->
@@ -351,6 +357,59 @@
     }
   }
 
+  function switchTab(tab){
+    const inputSection = document.querySelector('.form-card');
+    const riwayatSection = document.getElementById('riwayatCard');
+    if(tab==='input'){
+      inputSection.style.display='block';
+      riwayatSection.style.display='none';
+      document.getElementById('tabInput').style.background='var(--green)';
+      document.getElementById('tabInput').style.color='white';
+      document.getElementById('tabInput').style.borderColor='var(--green)';
+      document.getElementById('tabRiwayat').style.background='var(--white)';
+      document.getElementById('tabRiwayat').style.color='var(--gray)';
+      document.getElementById('tabRiwayat').style.borderColor='var(--border)';
+    } else {
+      inputSection.style.display='none';
+      riwayatSection.style.display='block';
+      document.getElementById('tabInput').style.background='var(--white)';
+      document.getElementById('tabInput').style.color='var(--gray)';
+      document.getElementById('tabInput').style.borderColor='var(--border)';
+      document.getElementById('tabRiwayat').style.background='var(--green)';
+      document.getElementById('tabRiwayat').style.color='white';
+      document.getElementById('tabRiwayat').style.borderColor='var(--green)';
+      loadRiwayatAdmin();
+    }
+  }
+
+  async function loadRiwayatAdmin(){
+    const list=document.getElementById('riwayatAdminList');
+    list.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray)">Memuat...</div>';
+    try{
+      const json=await jsonpFetch(SCRIPT_URL+'?action=getData&t='+Date.now());
+      const data=json.data||[];
+      // Show last 30 entries yang diinput admin (kolom ke-9 = 'Admin')
+      const adminData=data.filter(r=>r[9]==='Admin').slice(0,30);
+      if(adminData.length===0){
+        list.innerHTML='<div style="text-align:center;padding:24px;color:var(--gray);font-size:13px">Belum ada input admin.</div>';
+        return;
+      }
+      const ketClass={'Sakit':'badge-sakit','Izin':'badge-izin','Perjalanan Dinas':'badge-dinas','Alpha':'badge-alpha','Lembur':'badge-lembur'};
+      const ketEmoji={'Sakit':'🤒','Izin':'📋','Perjalanan Dinas':'🧳','Alpha':'🔴','Lembur':'🌙'};
+      list.innerHTML=adminData.map(r=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid #f3f4f6;">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">${r[3].charAt(0)}</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700">${r[3]}</div>
+            <div style="font-size:11px;color:var(--gray)">${r[0]} • ${r[4]} • ${r[8]!=='-'?r[8]:''}</div>
+          </div>
+          <span class="badge ${ketClass[r[6]]||'badge-sakit'}">${ketEmoji[r[6]]||''} ${r[6]}</span>
+        </div>`).join('');
+    } catch(e){
+      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--red)">Gagal memuat.</div>';
+    }
+  }
+
   function showStatus(type,title,body){
     const card=document.getElementById('statusCard');
     card.className='status-card '+type;
@@ -360,5 +419,17 @@
     setTimeout(()=>card.className='status-card',5000);
   }
 </script>
+<div id="riwayatCard" style="display:none">
+  <div style="background:var(--white);border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:14px;font-weight:700;">📋 Riwayat Input Admin</div>
+      <button onclick="loadRiwayatAdmin()" style="background:none;border:none;font-size:12px;color:var(--green);cursor:pointer;font-weight:600">🔄 Refresh</button>
+    </div>
+    <div id="riwayatAdminList">
+      <div style="text-align:center;padding:24px;color:var(--gray);font-size:13px">Klik tab "Riwayat & Edit" untuk melihat data.</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
