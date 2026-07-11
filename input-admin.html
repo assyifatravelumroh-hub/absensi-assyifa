@@ -73,6 +73,8 @@
   .ket-pill.ket-dinas.selected .dot{background:var(--blue);}
   .ket-pill.ket-alpha.selected{border-color:var(--red);background:var(--red-light);color:var(--red);}
   .ket-pill.ket-alpha.selected .dot{background:var(--red);}
+  .ket-pill#pill-hadir.selected{border-color:var(--green);background:var(--green-light);color:var(--green);}
+  .ket-pill#pill-hadir.selected .dot{background:var(--green);}
   .ket-pill.ket-lembur.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple);}
   .ket-pill.ket-lembur.selected .dot{background:var(--purple);}
 
@@ -196,11 +198,12 @@
     <div class="field">
       <label>Keterangan</label>
       <div class="ket-grid">
+        <label class="ket-pill" id="pill-hadir" onclick="pilihKet('Hadir')"><span class="dot"></span> ✅ Hadir</label>
+        <label class="ket-pill ket-lembur" id="pill-lembur" onclick="pilihKet('Lembur')"><span class="dot"></span> 🌙 Lembur</label>
         <label class="ket-pill ket-sakit" id="pill-sakit" onclick="pilihKet('Sakit')"><span class="dot"></span> 🤒 Sakit</label>
         <label class="ket-pill ket-izin" id="pill-izin" onclick="pilihKet('Izin')"><span class="dot"></span> 📋 Izin</label>
         <label class="ket-pill ket-dinas" id="pill-dinas" onclick="pilihKet('Perjalanan Dinas')"><span class="dot"></span> 🧳 Perjalanan Dinas</label>
-        <label class="ket-pill ket-lembur" id="pill-lembur" onclick="pilihKet('Lembur')"><span class="dot"></span> 🌙 Lembur</label>
-        <label class="ket-pill ket-alpha" id="pill-alpha" onclick="pilihKet('Alpha')" style="grid-column:1/-1"><span class="dot"></span> 🔴 Alpha (Tidak Hadir Tanpa Keterangan)</label>
+        <label class="ket-pill ket-alpha" id="pill-alpha" onclick="pilihKet('Alpha')"><span class="dot"></span> 🔴 Alpha</label>
       </div>
       <input type="hidden" id="keterangan" value=""/>
       <div class="wajib-note" id="wajibNote">⚠️ Catatan wajib diisi untuk keterangan ini!</div>
@@ -264,7 +267,7 @@
   function pilihKet(ket){
     document.getElementById('keterangan').value=ket;
     document.querySelectorAll('.ket-pill').forEach(p=>p.classList.remove('selected'));
-    const map={'Sakit':'sakit','Izin':'izin','Perjalanan Dinas':'dinas','Lembur':'lembur','Alpha':'alpha'};
+    const map={'Hadir':'hadir','Sakit':'sakit','Izin':'izin','Perjalanan Dinas':'dinas','Lembur':'lembur','Alpha':'alpha'};
     document.getElementById('pill-'+map[ket])?.classList.add('selected');
 
     // Catatan wajib untuk Sakit, Izin, Perjalanan Dinas
