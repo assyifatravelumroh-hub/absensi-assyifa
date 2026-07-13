@@ -435,18 +435,46 @@
         // HITUNG SKOR KINERJA KARYAWAN
         // ============================================================
         function hitungSkor(p, hariKerja) {
-          // Bobot penilaian
-          // Kehadiran: 40%, Ketepatan Waktu: 30%, Lembur (bonus): 10%, Sakit/Izin: -20%
           const totalMasuk = p.hadir + p.sakit + p.izin + p.dinas;
-          const persenHadir = hariKerja > 0 ? (totalMasuk / hariKerja) * 100 : 0;
-          const persenTepat = p.hadir > 0 ? ((p.hadir - p.terlambat) / p.hadir) * 100 : 100;
-          const bonusLembur = Math.min(p.lemburPulang * 2, 10); // max 10 poin
-          const pengurang = (p.sakit * 1.5) + (p.izin * 1); // sakit -1.5, izin -1 per hari
 
-          const skorKehadiran = (persenHadir / 100) * 40;
-          const skorTepat = (persenTepat / 100) * 30;
+          // Kalau tidak ada data sama sekali → skor 0
+          if (totalMasuk === 0 && p.hadir === 0) {
+            return {
+              skor: 0, grade: 'E', bintang: '⭐', warna: '#c0392b',
+              keterangan: 'Tidak Ada Data 📭',
+              persenHadir: 0, persenTepat: 0
+            };
+          }
+
+          // % Kehadiran dari hari kerja efektif
+          const persenHadir = hariKerja > 0 ? (totalMasuk / hariKerja) * 100 : 0;
+
+          // % Tepat waktu — kalau tidak pernah hadir = 0%, bukan 100%
+          const persenTepat = p.hadir > 0
+            ? Math.max(0, ((p.hadir - p.terlambat) / p.hadir) * 100)
+            : 0;
+
+          // Bonus lembur (max 10 poin) & bonus dinas (max 6 poin)
+          const bonusLembur = Math.min(p.lemburPulang * 2, 10);
+          const bonusDinas  = Math.min(p.dinas * 1.5, 6);
+
+          // Pengurang
+          const pengurangAlpha     = (p.alpha || 0) * 3;
+          const pengurangTdkPulang = (p.tidakPulang || 0) * 2;
+          const pengurangSakit     = p.sakit * 1;
+          const pengurangIzin      = p.izin * 0.5;
+
+          // Hitung skor
+          const skorKehadiran = (persenHadir / 100) * 35;
+          const skorTepat     = (persenTepat / 100) * 25;
+          const skorPulang    = p.hadir > 0
+            ? Math.max(0, (1 - (p.tidakPulang||0) / p.hadir)) * 20
+            : 0;
+
           const skorTotal = Math.min(100, Math.max(0,
-            skorKehadiran + skorTepat + bonusLembur - pengurang
+            skorKehadiran + skorTepat + skorPulang
+            + bonusLembur + bonusDinas
+            - pengurangAlpha - pengurangSakit - pengurangIzin
           ));
 
           let grade, bintang, warna;
