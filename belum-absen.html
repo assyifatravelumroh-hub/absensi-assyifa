@@ -606,11 +606,12 @@
               <div class="stat-pills">
                 <div class="stat-pill sp-green">✅ Hadir: ${p.hadir}</div>
                 <div class="stat-pill sp-orange">⏰ Terlambat: ${p.terlambat}</div>
+                <div class="stat-pill sp-red">🔴 Alpha: ${p.alpha||0}</div>
+                <div class="stat-pill" style="background:var(--orange-light);color:var(--orange)">⚠️ Tdk Pulang: ${p.tidakPulang||0}</div>
                 <div class="stat-pill sp-red">🤒 Sakit: ${p.sakit}</div>
                 <div class="stat-pill sp-gold">📋 Izin: ${p.izin}</div>
                 <div class="stat-pill sp-blue">🧳 Dinas: ${p.dinas}</div>
                 <div class="stat-pill sp-purple">🌙 Lembur: ${p.lemburPulang}</div>
-                ${p.lemburHariLibur?`<div class="stat-pill" style="background:#ede9fe;color:#6d28d9">🔴 Lembur Hari Libur: ${p.lemburHariLibur}</div>`:''}
                 ${hariKerja?`<div class="stat-pill" style="background:#f3f4f6;color:var(--gray)">📈 Kehadiran: ${persenHadir}%</div>`:''}
               </div>
               <!-- Skor Kinerja -->
