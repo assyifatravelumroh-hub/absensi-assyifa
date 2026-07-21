@@ -620,16 +620,54 @@
         const tabelRows=tglList.map((item,i)=>{
           const m=item.masuk;
           const p2=item.pulang;
-          return `<tr>
+          const a=item.alpha;
+          const tp=item.tidakPulang;
+          const lib=item.libur;
+          const isLib=lib||item.isLiburMark;
+          const namaLib=item.namaLibur||(lib?(lib[7]||lib[8]||'Hari Libur'):'Hari Libur');
+
+          // Hari Libur / Minggu — baris merah
+          if(isLib && !m && !a){
+            return `<tr style="background:#fdecea;">
+              <td style="color:var(--gray);font-size:11px">${i+1}</td>
+              <td><b style="color:var(--red)">${item.tgl}</b></td>
+              <td style="color:var(--red);font-weight:700">${item.hari}</td>
+              <td colspan="6" style="color:var(--red);font-weight:600;text-align:center;">
+                🌴 Hari Libur — ${namaLib}
+              </td>
+            </tr>`;
+          }
+
+          // Alpha — tidak hadir di hari kerja
+          if(a && !m){
+            return `<tr style="background:#fdecea;">
+              <td style="color:var(--gray);font-size:11px">${i+1}</td>
+              <td><b>${item.tgl}</b></td>
+              <td style="color:var(--gray)">${item.hari}</td>
+              <td><span style="color:var(--red);font-weight:700">—</span></td>
+              <td>—</td>
+              <td><span class="badge badge-alpha">🔴 Alpha</span></td>
+              <td><span class="badge badge-alpha">Tidak Hadir</span></td>
+              <td>—</td>
+              <td style="font-size:11px;color:var(--gray)">Tidak ada absensi</td>
+            </tr>`;
+          }
+
+          // Normal — hadir dengan/tanpa pulang
+          const ketPulang = p2 ? ketBadge(p2[6])
+            : (tp ? '<span class="badge badge-tidak-pulang">⚠️ Tidak Absen Pulang</span>' : '—');
+          const rowBg = tp ? 'background:#fef3c7;' : '';
+
+          return `<tr style="${rowBg}">
             <td style="color:var(--gray);font-size:11px">${i+1}</td>
             <td><b>${item.tgl}</b></td>
             <td style="color:var(--gray)">${item.hari}</td>
             <td>${m?m[2]:'-'}</td>
-            <td>${p2?p2[2]:'-'}</td>
-            <td>${m?ketBadge(m[6]):'<span class="badge badge-sakit">Tidak Hadir</span>'}</td>
+            <td>${p2?p2[2]:(tp?'—':'-')}</td>
+            <td>${m?ketBadge(m[6]):'-'}</td>
             <td>${m?statusBadge(m[7]):'-'}</td>
-            <td>${p2?ketBadge(p2[6]):'-'}</td>
-            <td style="font-size:11px;color:var(--gray)">${m&&m[8]&&m[8]!=='-'?m[8]:''}</td>
+            <td>${ketPulang}</td>
+            <td style="font-size:11px;color:var(--gray);max-width:160px">${m&&m[8]&&m[8]!=='-'?m[8]:''}</td>
           </tr>`;
         }).join('');
 
