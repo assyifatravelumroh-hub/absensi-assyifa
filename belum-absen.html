@@ -542,16 +542,62 @@
           </div>`).join('');
 
         // Rows detail — ambil per tanggal (gabung masuk+pulang)
+        // Build tglMap dari semua rows pegawai ini
         const tglMap={};
         p.rows.forEach(row=>{
           const tgl=row[0];
           if(!tglMap[tgl]) tglMap[tgl]={tgl,hari:row[1],masuk:null,pulang:null,alpha:null,tidakPulang:null,libur:null};
-          if(row[5]==='Hadir' && row[6]!=='Alpha') tglMap[tgl].masuk=row;
-          if(row[5]==='Hadir' && row[6]==='Alpha') tglMap[tgl].alpha=row;
-          if(row[5]==='Pulang' && row[6]!=='Tidak Absen Pulang') tglMap[tgl].pulang=row;
-          if(row[6]==='Tidak Absen Pulang') tglMap[tgl].tidakPulang=row;
-          if(row[5]==='Libur' || row[6]==='Libur') tglMap[tgl].libur=row;
+          const ket=String(row[6]);
+          const tipe=String(row[5]);
+          if(tipe==='Hadir' && ket!=='Alpha') tglMap[tgl].masuk=row;
+          if(tipe==='Hadir' && ket==='Alpha') tglMap[tgl].alpha=row;
+          if(tipe==='Pulang' && ket!=='Tidak Absen Pulang') tglMap[tgl].pulang=row;
+          if(ket==='Tidak Absen Pulang') tglMap[tgl].tidakPulang=row;
+          if(tipe==='Libur' || ket==='Libur') tglMap[tgl].libur=row;
         });
+
+        // Tambahkan semua tanggal dalam bulan filter (agar Minggu & libur muncul)
+        if(bulan && tahun) {
+          const bln=parseInt(bulan), thn=parseInt(tahun);
+          const hariNama=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+          const liburNasional=['01/01/2026','16/01/2026','16/02/2026','17/02/2026',
+            '18/03/2026','19/03/2026','20/03/2026','21/03/2026','22/03/2026','23/03/2026','24/03/2026',
+            '03/04/2026','05/04/2026','01/05/2026','14/05/2026','15/05/2026',
+            '27/05/2026','28/05/2026','31/05/2026','01/06/2026','16/06/2026',
+            '17/08/2026','25/08/2026','24/12/2026','25/12/2026','01/01/2027'];
+          const namaLiburMap={'01/01/2026':'Tahun Baru 2026','16/01/2026':'Isra Mikraj',
+            '17/02/2026':'Tahun Baru Imlek','19/03/2026':'Hari Raya Nyepi',
+            '21/03/2026':'Idul Fitri 1447H','22/03/2026':'Idul Fitri 1447H',
+            '03/04/2026':'Wafat Yesus Kristus','05/04/2026':'Hari Paskah',
+            '01/05/2026':'Hari Buruh','14/05/2026':'Kenaikan Yesus Kristus',
+            '27/05/2026':'Idul Adha 1447H','31/05/2026':'Hari Raya Waisak',
+            '01/06/2026':'Hari Lahir Pancasila','16/06/2026':'Tahun Baru Islam 1448H',
+            '17/08/2026':'HUT Kemerdekaan RI ke-81','25/08/2026':'Maulid Nabi Muhammad SAW',
+            '25/12/2026':'Hari Natal'};
+
+          const daysInMonth=new Date(thn,bln,0).getDate();
+          for(let d=1;d<=daysInMonth;d++){
+            const dd=String(d).padStart(2,'0');
+            const mm=String(bln).padStart(2,'0');
+            const tgl=dd+'/'+mm+'/'+thn;
+            const dt=new Date(thn,bln-1,d);
+            const hari=hariNama[dt.getDay()];
+            const isMinggu=dt.getDay()===0;
+            const isLiburNas=liburNasional.includes(tgl);
+            const namaLib=isMinggu?'Hari Minggu 🌴':(namaLiburMap[tgl]||'');
+
+            if(!tglMap[tgl]){
+              tglMap[tgl]={tgl,hari,masuk:null,pulang:null,alpha:null,tidakPulang:null,libur:null};
+            }
+            // Mark sebagai libur kalau Minggu atau tanggal merah
+            if((isMinggu||isLiburNas) && !tglMap[tgl].libur && !tglMap[tgl].masuk){
+              tglMap[tgl].isLiburMark=true;
+              tglMap[tgl].namaLibur=namaLib;
+              tglMap[tgl].hari=hari;
+            }
+          }
+        }
+
         const tglList=Object.values(tglMap).sort((a,b)=>a.tgl.localeCompare(b.tgl));
 
         const ketEmoji2={'Hadir':'✅','Lembur':'🌙','Perjalanan Dinas':'🧳','Sakit':'🤒','Izin':'📋','Pulang Normal':'🔵','Pulang Lembur':'🌙','Pulang Cepat':'⏩','Alpha':'🔴','Tidak Absen Pulang':'⚠️','Libur':'🌴'};
