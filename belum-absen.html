@@ -128,6 +128,9 @@
   .badge-lembur{background:var(--purple-light);color:var(--purple);}
   .badge-pulang{background:var(--blue-light);color:var(--blue);}
   .badge-cepat{background:var(--gold-light);color:var(--gold);}
+  .badge-libur{background:var(--green-light);color:var(--green);}
+  .badge-alpha{background:var(--red-light);color:var(--red);}
+  .badge-tidak-pulang{background:var(--orange-light);color:var(--orange);}
 
   /* Loading */
   .loading-state{text-align:center;padding:60px 20px;color:var(--gray);}
@@ -257,7 +260,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvA6ump9G6DQw8P3xfvL2OO2XdNLzcJj_n1Tx3gaOKDmd_00z2aCnyIz6Bu7jYn2Wa4Q/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJvV_uUsGkpn4wkygCtfLO25zsBkMLZXfSO0ts20WapOTUKXnY8bMaiXacTjRZB2Pr3A/exec";
   const ADMIN_PASS = "assyifa2025";
 
   const BULAN_NAMA = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -381,27 +384,33 @@
         const tglRow = String(row[0]); // dd/MM/yyyy
         const isLibur = isHariLiburTgl(tglRow);
 
+        // Skip baris Libur dari hitungan
+        if(row[6]==='Libur') { p.rows.push(row); return; }
+
         if(row[5]==='Hadir'){
-          if(row[6]==='Lembur') {
-            // Lembur di hari libur — hitung terpisah, tidak masuk hadir normal
+          if(row[6]==='Alpha'){
+            p.alpha = (p.alpha||0)+1;
+            p.rows.push(row);
+          } else if(row[6]==='Lembur') {
             p.lemburMasuk++;
-            if(isLibur) p.lemburHariLibur = (p.lemburHariLibur||0)+1;
-            else p.hadir++;
-          } else if(!isLibur) {
-            // Absen normal di hari kerja saja
+            p.hadir++;
+            p.rows.push(row);
+          } else {
             if(row[6]==='Hadir') p.hadir++;
             if(row[6]==='Perjalanan Dinas') { p.hadir++; p.dinas++; }
             if(row[6]==='Sakit') p.sakit++;
             if(row[6]==='Izin') p.izin++;
             if(String(row[7]).includes('Terlambat')) p.terlambat++;
+            p.rows.push(row);
           }
-          p.rows.push(row);
         }
         if(row[5]==='Pulang'){
-          if(row[6]==='Pulang Lembur') p.lemburPulang++;
-          if(row[6]==='Pulang Cepat') p.pulangCepat++;
-          p.rows.push(row);
+          if(row[6]==='Tidak Absen Pulang') { p.tidakPulang=(p.tidakPulang||0)+1; p.rows.push(row); }
+          else if(row[6]==='Pulang Lembur') { p.lemburPulang++; p.rows.push(row); }
+          else if(row[6]==='Pulang Cepat') { p.pulangCepat++; p.rows.push(row); }
+          else { p.rows.push(row); }
         }
+        if(row[5]==='Libur') { p.rows.push(row); }
       });
 
       // Total keseluruhan
@@ -536,14 +545,17 @@
         const tglMap={};
         p.rows.forEach(row=>{
           const tgl=row[0];
-          if(!tglMap[tgl]) tglMap[tgl]={tgl,hari:row[1],masuk:null,pulang:null};
-          if(row[5]==='Hadir') tglMap[tgl].masuk=row;
-          if(row[5]==='Pulang') tglMap[tgl].pulang=row;
+          if(!tglMap[tgl]) tglMap[tgl]={tgl,hari:row[1],masuk:null,pulang:null,alpha:null,tidakPulang:null,libur:null};
+          if(row[5]==='Hadir' && row[6]!=='Alpha') tglMap[tgl].masuk=row;
+          if(row[5]==='Hadir' && row[6]==='Alpha') tglMap[tgl].alpha=row;
+          if(row[5]==='Pulang' && row[6]!=='Tidak Absen Pulang') tglMap[tgl].pulang=row;
+          if(row[6]==='Tidak Absen Pulang') tglMap[tgl].tidakPulang=row;
+          if(row[5]==='Libur' || row[6]==='Libur') tglMap[tgl].libur=row;
         });
         const tglList=Object.values(tglMap).sort((a,b)=>a.tgl.localeCompare(b.tgl));
 
-        const ketEmoji2={'Hadir':'✅','Lembur':'🌙','Perjalanan Dinas':'🧳','Sakit':'🤒','Izin':'📋','Pulang Normal':'🔵','Pulang Lembur':'🌙','Pulang Cepat':'⏩'};
-        const ketClass2={'Hadir':'badge-hadir','Sakit':'badge-sakit','Izin':'badge-izin','Perjalanan Dinas':'badge-dinas','Lembur':'badge-lembur','Pulang Normal':'badge-pulang','Pulang Lembur':'badge-lembur','Pulang Cepat':'badge-cepat'};
+        const ketEmoji2={'Hadir':'✅','Lembur':'🌙','Perjalanan Dinas':'🧳','Sakit':'🤒','Izin':'📋','Pulang Normal':'🔵','Pulang Lembur':'🌙','Pulang Cepat':'⏩','Alpha':'🔴','Tidak Absen Pulang':'⚠️','Libur':'🌴'};
+        const ketClass2={'Hadir':'badge-hadir','Sakit':'badge-sakit','Izin':'badge-izin','Perjalanan Dinas':'badge-dinas','Lembur':'badge-lembur','Pulang Normal':'badge-pulang','Pulang Lembur':'badge-lembur','Pulang Cepat':'badge-cepat','Alpha':'badge-alpha','Tidak Absen Pulang':'badge-tidak-pulang','Libur':'badge-libur'};
         const ketBadge=(k)=>{
           if(!k||k==='-') return '-';
           return `<span class="badge ${ketClass2[k]||'badge-hadir'}">${ketEmoji2[k]||''} ${k}</span>`;
