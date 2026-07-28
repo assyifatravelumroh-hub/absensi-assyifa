@@ -433,15 +433,27 @@
       liburBadge.classList.add('show');
       liburBadge.innerHTML = '🔴 MODE LIBUR — ' + nama + '<br><small style="font-weight:500">Absensi normal nonaktif. Hanya tersedia absen lembur.</small>';
 
-      // Sembunyikan keterangan masuk normal, tampilkan hanya lembur
+      // Mode libur: hanya tampilkan tombol Lembur sebagai keterangan
+      // Tombol Hadir aktif hanya setelah klik Lembur
       document.getElementById('ketMasukSection').innerHTML = `
         <label>Keterangan Masuk</label>
-        <div style="background:var(--purple-light);border:1.5px solid rgba(109,40,217,0.2);border-radius:10px;padding:12px 14px;margin-bottom:8px;">
-          <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px">🌙 Mode Lembur Hari Libur</div>
-          <div style="font-size:12px;color:var(--purple);opacity:0.85">Kamu absen pada hari libur. Absensi ini otomatis tercatat sebagai <b>Lembur Hari Libur</b>.</div>
+        <div style="margin-bottom:8px;">
+          <label class="ket-pill ket-lembur" id="pill-lembur-libur" onclick="pilihLemburLibur()" style="grid-column:1/-1;cursor:pointer;">
+            <span class="dot" id="dotLemburLibur"></span> 🌙 Lembur Hari Libur
+          </label>
         </div>
-        <input type="hidden" id="keterangan" value="Lembur"/>
+        <div id="lemburLiburInfo" style="display:none;background:var(--purple-light);border:1.5px solid rgba(109,40,217,0.2);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--purple);font-weight:500;margin-top:6px;">
+          🌙 Kamu akan absen lembur di hari libur. <b>Tidak perlu absen pulang</b> — sistem otomatis mencatat lembur sehari penuh.
+        </div>
+        <input type="hidden" id="keterangan" value=""/>
       `;
+
+      // Sembunyikan section pulang
+      document.getElementById('ketPulangSection').style.display='none';
+      document.getElementById('modeAbsen').value='Hadir';
+
+      // Reset & kunci tombol hadir sampai lembur dipilih
+      updateTombolState();
     } else {
       // Mode normal
       clockCard.classList.remove('mode-libur');
@@ -581,6 +593,28 @@
       return;
     }
 
+    // Mode libur — tombol hadir aktif hanya kalau Lembur dipilih
+    const {isLibur: isLiburNow} = cekHariLibur();
+    if(isLiburNow && !statusHariIni.hadir){
+      const ket = document.getElementById('keterangan').value;
+      btnHadir.disabled = ket !== 'Lembur';
+      btnPulang.disabled = true;
+      lockHadir.style.display = ket !== 'Lembur' ? 'block' : 'none';
+      lockPulang.style.display = 'block';
+      subHadir.textContent = ket === 'Lembur' ? 'Tap untuk absen lembur' : 'Pilih keterangan dulu';
+      subPulang.textContent = 'Tidak diperlukan';
+      jamInfo.classList.remove('show');
+      return;
+    }
+
+    // Mode libur — sudah absen lembur
+    if(isLiburNow && statusHariIni.hadir){
+      btnHadir.disabled=true; btnPulang.disabled=true;
+      lockHadir.style.display='block'; lockPulang.style.display='block';
+      jamInfo.classList.remove('show');
+      return;
+    }
+
     const {hadir,pulang,keteranganMasuk}=statusHariIni;
 
     if(pulang){
@@ -715,6 +749,13 @@
     const ket=document.getElementById('keterangan').value;
     const notes=document.getElementById('notes').value.trim();
 
+    // Mode libur: validasi harus pilih Lembur dulu
+    const {isLibur: isLiburSubmit} = cekHariLibur();
+    if(isLiburSubmit && tipe==='Hadir' && ket!=='Lembur'){
+      showStatus('error','⚠️','Pilih Keterangan Dulu','Pilih keterangan "Lembur Hari Libur" terlebih dahulu.');
+      return;
+    }
+
     // Validasi catatan wajib untuk Izin dan Pulang Cepat
     if((ket==='Izin' || ket==='Pulang Cepat') && !notes){
       const label = ket==='Izin' ? 'izin' : 'pulang cepat';
@@ -749,7 +790,15 @@
           statusHariIni.jamPulang=data.jam;
         }
 
-        if(tipe==='Pulang'){
+        // Mode libur + lembur → langsung tampilkan selesai tanpa perlu pulang
+        const {isLibur: isLiburDone} = cekHariLibur();
+        if(tipe==='Hadir' && ket==='Lembur' && isLiburDone){
+          document.getElementById('formCard').style.display='none';
+          document.getElementById('jamInfo').classList.remove('show');
+          tampilkanSelesai(data.jam, '—', 'Lembur Hari Libur');
+          showStatus('success','🌙','Absensi Lembur Hari Libur Berhasil!',
+            'Hai, '+selectedNama+'! Lembur hari libur jam '+data.jam+' telah tercatat. Tidak perlu absen pulang.');
+        } else if(tipe==='Pulang'){
           // Tampilkan selesai
           document.getElementById('formCard').style.display='none';
           document.getElementById('jamInfo').classList.remove('show');
@@ -775,6 +824,28 @@
       document.getElementById('loadingBtn').style.display='none';
       document.getElementById('actionButtons').style.display='grid';
     }
+  }
+
+  function pilihLemburLibur(){
+    const pill = document.getElementById('pill-lembur-libur');
+    const dot  = document.getElementById('dotLemburLibur');
+    const info = document.getElementById('lemburLiburInfo');
+    const ket  = document.getElementById('keterangan');
+
+    if(ket.value === 'Lembur'){
+      // Unselect
+      pill.classList.remove('selected');
+      dot.style.background = 'var(--border)';
+      info.style.display = 'none';
+      ket.value = '';
+    } else {
+      // Select
+      pill.classList.add('selected');
+      dot.style.background = 'var(--purple)';
+      info.style.display = 'block';
+      ket.value = 'Lembur';
+    }
+    updateTombolState();
   }
 
   function resetUI(){
