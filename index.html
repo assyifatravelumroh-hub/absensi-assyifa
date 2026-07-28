@@ -538,28 +538,41 @@
       document.getElementById('jamInfo').classList.remove('show');
     } else if(hadir){
       // Sudah hadir, belum pulang
-      const kLembur = keteranganMasuk === 'Lembur';
-      if(kLembur){
+      const kLembur  = keteranganMasuk === 'Lembur';
+      const kSakit   = keteranganMasuk === 'Sakit';
+      const kIzin    = keteranganMasuk === 'Izin';
+      const kDinas   = keteranganMasuk === 'Perjalanan Dinas';
+      const noPulang = kSakit || kIzin || kDinas;
+
+      if(noPulang){
+        // Sakit/Izin/Dinas → tidak perlu absen pulang → langsung selesai
+        st.className='absen-status selesai show';
+        const emojiMap = {'Sakit':'🤒','Izin':'📋','Perjalanan Dinas':'🧳'};
+        st.innerHTML=(emojiMap[keteranganMasuk]||'✅')+' Absensi '+keteranganMasuk+' jam '+jamMasuk+' — Tidak perlu absen pulang';
+        tampilkanSelesai(jamMasuk, '—', keteranganMasuk);
+        document.getElementById('formCard').style.display='none';
+        document.getElementById('jamInfo').classList.remove('show');
+      } else if(kLembur){
         st.className='absen-status lembur show';
         st.innerHTML='🌙 Masuk Lembur jam '+jamMasuk+' — Silakan absen pulang lembur';
-      } else {
-        st.className='absen-status sudah-hadir show';
-        st.innerHTML='✅ Sudah masuk jam '+jamMasuk+' — Silakan absen pulang';
-      }
-      // Tampilkan keterangan pulang
-      document.getElementById('ketMasukSection').style.display='none';
-      document.getElementById('ketPulangSection').style.display='block';
-      document.getElementById('modeAbsen').value='Pulang';
-
-      // Kalau masuk lembur, set default pulang lembur
-      if(kLembur){
+        // Tampilkan keterangan pulang
+        document.getElementById('ketMasukSection').style.display='none';
+        document.getElementById('ketPulangSection').style.display='block';
+        document.getElementById('modeAbsen').value='Pulang';
         pilihKet('pulang','Pulang Lembur');
         document.getElementById('pill-pulang-normal').classList.add('disabled');
         document.getElementById('pill-pulang-cepat').classList.add('disabled');
+        updateTombolState();
       } else {
+        st.className='absen-status sudah-hadir show';
+        st.innerHTML='✅ Sudah masuk jam '+jamMasuk+' — Silakan absen pulang';
+        // Tampilkan keterangan pulang
+        document.getElementById('ketMasukSection').style.display='none';
+        document.getElementById('ketPulangSection').style.display='block';
+        document.getElementById('modeAbsen').value='Pulang';
         pilihKet('pulang','Pulang Normal');
+        updateTombolState();
       }
-      updateTombolState();
     } else {
       // Belum hadir
       st.className='absen-status belum-hadir show';
@@ -679,11 +692,37 @@
   function tampilkanSelesai(jamMasuk, jamPulang, keteranganMasuk){
     const card=document.getElementById('selesaiCard');
     const detail=document.getElementById('selesaiDetail');
+    const noPulangKet=['Sakit','Izin','Perjalanan Dinas','Lembur Hari Libur'];
+    const isNoPulang = noPulangKet.includes(keteranganMasuk) || jamPulang==='—';
+
+    // Update selesai card text
+    const selesaiTitle = card.querySelector('.selesai-title');
+    const selesaiBody  = card.querySelector('.selesai-body');
+    if(selesaiTitle){
+      if(keteranganMasuk==='Sakit'){
+        selesaiTitle.textContent='Absensi Sakit Tercatat 🤒';
+        selesaiBody.textContent='Semoga cepat sembuh! Tidak perlu absen pulang.';
+      } else if(keteranganMasuk==='Izin'){
+        selesaiTitle.textContent='Absensi Izin Tercatat 📋';
+        selesaiBody.textContent='Izin kamu sudah tercatat. Tidak perlu absen pulang.';
+      } else if(keteranganMasuk==='Perjalanan Dinas'){
+        selesaiTitle.textContent='Absensi Perjalanan Dinas Tercatat 🧳';
+        selesaiBody.textContent='Perjalanan dinas kamu sudah tercatat. Tidak perlu absen pulang.';
+      } else if(keteranganMasuk==='Lembur Hari Libur'){
+        selesaiTitle.textContent='Absensi Lembur Hari Libur Tercatat 🌙';
+        selesaiBody.textContent='Lembur hari libur kamu sudah tercatat. Tidak perlu absen pulang.';
+      } else {
+        selesaiTitle.textContent='Absensi Hari Ini Selesai!';
+        selesaiBody.textContent='Kamu sudah melakukan absen masuk dan pulang hari ini.';
+      }
+    }
+
     card.classList.add('show');
     detail.innerHTML=`
       <div class="selesai-row"><span class="sk">Masuk</span><span class="sv">${jamMasuk||'-'}</span></div>
-      <div class="selesai-row"><span class="sk">Pulang</span><span class="sv">${jamPulang||'-'}</span></div>
+      ${!isNoPulang?`<div class="selesai-row"><span class="sk">Pulang</span><span class="sv">${jamPulang||'-'}</span></div>`:''}
       <div class="selesai-row"><span class="sk">Keterangan</span><span class="sv">${keteranganMasuk||'Hadir'}</span></div>
+      ${isNoPulang?`<div class="selesai-row"><span class="sk">Absen Pulang</span><span class="sv" style="color:var(--green)">Tidak diperlukan ✅</span></div>`:''}
     `;
   }
 
